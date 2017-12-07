@@ -1,0 +1,13 @@
+/*
+ * controller.h
+ *
+ *  Created on: 1 בספט 2016
+ *      Author: stoledo
+ */
+
+#ifndef CONTROLLER_H_
+#define CONTROLLER_H_
+
+void controllerTask_init();
+
+#endif /* CONTROLLER_H_ */

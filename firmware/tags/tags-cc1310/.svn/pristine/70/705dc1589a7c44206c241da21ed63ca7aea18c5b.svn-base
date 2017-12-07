@@ -1,0 +1,216 @@
+#include <stdlib.h>
+#include <time.h>
+
+#include <xdc/std.h>
+#include <xdc/runtime/Timestamp.h>
+#include <xdc/runtime/Types.h>
+#include <xdc/runtime/System.h>
+
+#include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Task.h>
+#include <ti/sysbios/knl/Semaphore.h>
+#include <ti/sysbios/knl/Mailbox.h>
+
+#include <ti/sysbios/family/arm/cc26xx/Seconds.h>
+
+#include <driverlib/rf_mailbox.h>
+#include <driverlib/rf_prop_mailbox.h>
+#include <driverlib/rf_common_cmd.h>
+#include <driverlib/rf_prop_cmd.h>
+#include <ti/drivers/rf/RF.h>
+
+#include "config.h"
+#include "radio_setup.h"
+#include "buffers.h"
+#include "uart.h"
+
+#include "leds.h"
+#include "board.h"
+
+
+#include "rf_queue_pointer.h"
+
+#include "receive.h"
+
+#define radioSetupInUse RADIO_SETUP_COMM // the controller uses the COMM setup
+
+/***** Variable declarations *****/
+static RF_Object rfObject;
+static RF_Handle rfHandle;
+
+//#define QUEUE_SIZE 2
+//#if defined(__TI_COMPILER_VERSION__)
+//  #pragma DATA_ALIGN (rxDataEntryBuffer, 4)
+//  static uint8_t rxDataEntryBuffer[QUEUE_SIZE*RF_QUEUE_POINTER_ELEMENT_SIZE];
+//#elif defined(__IAR_SYSTEMS_ICC__)
+ // #pragma data_alignment = 4
+//  static uint8_t rxDataEntryBuffer[QUEUE_SIZE*RF_QUEUE_POINTER_ELEMENT_SIZE];
+//#elif defined(__GNUC__)
+//  static uint8_t rxDataEntryBuffer [QUEUE_SIZE*RF_QUEUE_POINTER_ELEMENT_SIZE] __attribute__ ((aligned (4)));
+//#else
+//  #error This compiler is not supported.
+//#endif
+
+//uint32_t values[4] = { 1, 2 };
+
+#define UNKNOWN 99
+#define TX_OK   0
+#define TX_FAIL 1
+#define RX_OK   2
+#define RX_FAIL 3
+
+static void controllerTaskFunction(UArg arg0, UArg arg1) {
+  System_printf("Setting up radio\n");
+
+  RF_Params rfParams;
+  RF_Params_init(&rfParams);
+  rfParams.nInactivityTimeout = 100; // in usecs
+
+  /* Request access to the radio */
+  rfHandle = RF_open(&rfObject, &(radio_mode[radioSetupInUse]), (RF_RadioSetup*)&(radio_cmd_prop_div_setup[radioSetupInUse]), &rfParams);
+
+  /* Set the frequency */
+  RF_postCmd(rfHandle, (RF_Op*)&(radio_cmd_fs[radioSetupInUse]), RF_PriorityNormal, NULL, 0);
+
+  /* Modify CMD_PROP_RX command for application needs */
+  (radio_cmd_prop_rx[radioSetupInUse]).pQueue = &dataQueue;           /* Set the Data Entity queue for received data */
+  (radio_cmd_prop_rx[radioSetupInUse]).rxConf.bAutoFlushIgnored = 1;  /* Discard ignored packets from Rx queue */
+  (radio_cmd_prop_rx[radioSetupInUse]).rxConf.bAutoFlushCrcErr = 1;   /* Discard packets with CRC error from Rx queue */
+  (radio_cmd_prop_rx[radioSetupInUse]).maxPktLen = BUFFER_SIZE-NUM_APPENDED_BYTES-1;
+  (radio_cmd_prop_rx[radioSetupInUse]).pktConf.bRepeatOk = 0; // stop when a packet is received...
+  (radio_cmd_prop_rx[radioSetupInUse]).pktConf.bRepeatNok = 1;
+
+  /* Enter RX mode and stay forever in RX */
+  //RF_runCmd(rfHandle, (RF_Op*)&(radio_cmd_prop_rx[radio_setup]), RF_PriorityNormal, &callback, IRQ_RX_ENTRY_DONE);
+  //RF_postCmd(rfHandle, (RF_Op*)&(radio_cmd_prop_rx[radio_setup]), RF_PriorityNormal, &receiveCallback, IRQ_RX_ENTRY_DONE);
+
+  System_printf("receive task done setting up, waiting for packets\n");
+
+  while(1) {
+
+  	System_printf("posting rx\n");
+  	radio_cmd_prop_rx[radioSetupInUse].status = IDLE;
+    RF_postCmd(rfHandle, (RF_Op*)&(radio_cmd_prop_rx[radioSetupInUse]), RF_PriorityNormal, &receiveCallback, IRQ_RX_ENTRY_DONE);
+
+    //uint8_t outcome;
+
+  	System_printf("waiting for a packet ready buffer is %d\n",readyBuffer.id);
+  	Semaphore_pend(packetReceivedSemaphore, BIOS_WAIT_FOREVER);
+
+  	// previous ready buffer is now used in queue, get another
+  	//Mailbox_pend(freeMailbox, &readyBuffer,  BIOS_WAIT_FOREVER);
+
+  	receiveGetBuffer();
+
+  	uint8_t* rxpacket = buffers[ incomingBuffer.id ];
+  	uint8_t elementLength = rxpacket[0];
+  	uint8_t payloadLength = rxpacket[1];
+  	uint8_t rssi          = rxpacket[1+1+payloadLength];
+  	uint8_t tsp = 1+1+payloadLength+1;
+  	uint32_t ts =  rxpacket[tsp] | (rxpacket[tsp+1]<<8) | (rxpacket[tsp+2]<<16) | (rxpacket[tsp+3]<<24);
+  	uint8_t  status       = rxpacket[1+1+payloadLength+1+4];
+
+  	//Mailbox_post(uartTxMailbox, &incomingBuffer, BIOS_WAIT_FOREVER);
+  	Mailbox_post(freeMailbox, &incomingBuffer, BIOS_WAIT_FOREVER);
+
+  	leds_blink(LEDS_GREEN, 1); // received
+	  //leds_on(Board_GLED);
+	  //Task_sleep(10000 / Clock_tickPeriod);
+	  //leds_off(Board_GLED);
+
+  	//System_printf("rx! incoming buffer %d len %d sending to uart\n", incomingBuffer.id, incomingBuffer.length);
+  	//System_printf("packet received! elen=%u plen=%u rssi=%u ts=%lu status=%02x\n",
+  	//		          elementLength, payloadLength, rssi, ts, status);
+
+  	//System_printf("rx! ts=%lu %lu %.6f\n",ts,(uint32_t) (ts + (3 + 0.001)*4000000),((uint32_t) (ts + (3 + 0.001)*4000000)-ts)/4e6);
+
+  	/* respond */
+#if 1
+#if 0
+  	RF_Stat stat = RF_runDirectCmd(rfHandle, CMD_STOP);
+  	System_printf("post stop\n");
+  	switch (stat) {
+  	case RF_StatBusyError: System_printf("busy\n"); break;
+  	case RF_StatRadioInactiveError: System_printf("inactive\n"); break;
+  	case RF_StatCmdDoneError: System_printf("cmd error\n"); break;
+  	case RF_StatInvalidParamsError: System_printf("invalid\n"); break;
+  	case RF_StatError: System_printf("stat err\n"); break;
+  	case RF_StatCmdDoneSuccess: System_printf("cmd success\n"); break;
+  	case RF_StatCmdSch: System_printf("cmd sched\n"); break;
+  	case RF_StatSuccess: System_printf("stat success\n"); break;
+  	}
+#endif
+  	uint8_t packet[10];
+
+  	(radio_cmd_prop_tx[RADIO_SETUP_COMM]).status = IDLE;
+  	(radio_cmd_prop_tx[RADIO_SETUP_COMM]).pktLen = 10;
+  	(radio_cmd_prop_tx[RADIO_SETUP_COMM]).pPkt = packet;
+  	(radio_cmd_prop_tx[RADIO_SETUP_COMM]).startTrigger.triggerType = TRIG_ABSTIME;
+  	(radio_cmd_prop_tx[RADIO_SETUP_COMM]).startTrigger.pastTrig = 0;
+  	(radio_cmd_prop_tx[RADIO_SETUP_COMM]).startTime = (uint32_t) (ts + (3 + 0.001)*4e6);
+
+  	RF_EventMask result = RF_runCmd(rfHandle, (RF_Op*)&(radio_cmd_prop_tx[RADIO_SETUP_COMM]), RF_PriorityNormal, NULL, 0);
+  	switch ((radio_cmd_prop_tx[RADIO_SETUP_COMM]).status) {
+  	case PROP_DONE_OK:
+  		//rat_time += 4000000*tagPeriod;
+  		System_printf("CMD_TX OK> %04x\n",(radio_cmd_prop_tx[RADIO_SETUP_COMM]).status); // ADV
+  		leds_blink(LEDS_RED,1);
+  		break;
+  	case ERROR_PAST_START:
+  		//if (rat_slack < rat_slack_max) rat_slack += rat_slack_step;
+  		//rat_time = RF_getCurrentTime() + 4000000*tagPeriod + rat_slack;
+  		//System_printf("+100us\n");
+  		leds_blink(LEDS_RED,3);
+  		System_printf("CMD_TX PAST> %04x\n",(radio_cmd_prop_tx[RADIO_SETUP_COMM]).status); // ADV
+  		break;
+  	default:
+  		//if (rat_slack < rat_slack_max) rat_slack += rat_slack_step;
+  		//rat_time = RF_getCurrentTime() + 4000000*tagPeriod + rat_slack;
+  		leds_blink(LEDS_RED,2);
+  		System_printf("CMD_TX ERR> %04x\n",(radio_cmd_prop_tx[RADIO_SETUP_COMM]).status); // ADV
+  		break;
+  	}
+#endif
+
+  	//System_printf("rx! ts=%lu %lu %.6f\n",ts,(uint32_t) (ts + (3 + 0.001)*4000000),((uint32_t) (ts + (3 + 0.001)*4000000)-ts)/4e6);
+  	//System_printf("tx ended rat=%d\n",RF_getCurrentTime());
+
+#if 0
+  	uint8_t tagPeriod = 2;
+	  Types_FreqHz tsf;
+	  Timestamp_getFreq(&tsf);
+
+  	double ts_diff  = (double) (rx_timestamp - rx_timestamp_prev )/tsf.lo;
+  	double rat_diff = (double) (ts           - rx_rat_prev       )/4e6   ;
+  	double secs_diff = (rx_secs.secs - rx_secs_prev.secs) + 1e-9 * (rx_secs.nsecs - rx_secs_prev.nsecs);
+  	System_printf("ts_diff=%.6f rat_diff=%.6f secs_diff=%.6f tsfreq=%d\n",ts_diff,rat_diff,secs_diff,tsf.lo);
+
+  	rx_timestamp_prev  = rx_timestamp;
+  	rx_rat_prev = ts;
+  	rx_secs_prev = rx_secs;
+#endif
+  	//memcpy(buffers[d.id], "123\n", 4);
+  	//d.length = 4;
+
+  	//buffer_descriptor d;
+  	//Mailbox_pend(freeMailbox, &d,  BIOS_WAIT_FOREVER);
+  }
+}
+
+#define CONTROLLER_TASK_STACK_SIZE 1024
+#define CONTROLLER_TASK_PRIORITY   2
+
+static Task_Params controllerTaskParams;
+Task_Struct controllerTask;    /* not static so you can see in ROV */
+static uint8_t controllerTaskStack[CONTROLLER_TASK_STACK_SIZE];
+
+void controllerTask_init() {
+    Task_Params_init(&controllerTaskParams);
+    controllerTaskParams.stackSize = CONTROLLER_TASK_STACK_SIZE;
+    controllerTaskParams.priority = CONTROLLER_TASK_PRIORITY;
+    controllerTaskParams.stack = &controllerTaskStack;
+    controllerTaskParams.arg0 = (UInt)1000000;
+
+    Task_construct(&controllerTask, controllerTaskFunction, &controllerTaskParams, NULL);
+}
+

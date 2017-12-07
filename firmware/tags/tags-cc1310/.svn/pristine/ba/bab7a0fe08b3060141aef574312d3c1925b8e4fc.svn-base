@@ -1,0 +1,154 @@
+/*
+ * Based on the flashdemo example from e2e by Richard W.
+ *
+ * seems to require adding this to cmd file before .ccfg:
+ *     .flashdata      :   > FLASH_DATA
+ *
+ * Also,
+ */
+
+/* XDCtools Header files */
+#include <xdc/std.h>
+#include <xdc/runtime/Assert.h>
+#include <xdc/runtime/System.h>
+
+/* TI-RTOS Header files */
+#include <ti/drivers/PIN.h>
+#include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Task.h>
+
+/* DriverLib Header files */
+#include <driverlib/flash.h>
+#include <driverlib/vims.h>
+
+/* Board Header files */
+#include "Board.h"
+
+/* Page size is 4KiB on the CC13xx/CC26xx */
+#define FLASH_PAGE_SIZE         0x1000
+
+/* Symbols are defined in the linker script. */
+
+extern const uint32_t __FLASH_ADDR;
+extern const uint32_t __FLASH_SIZE;
+extern const uint32_t __FLASH_DATA_ADDR;
+extern const uint32_t __FLASH_DATA_SIZE;
+const uint32_t FLASH_BASE_ADDR = (uint32_t)&__FLASH_ADDR;
+const uint32_t FLASH_SIZE      = (uint32_t)&__FLASH_SIZE;
+const uint32_t FLASH_DATA_ADDR = (uint32_t)&__FLASH_DATA_ADDR;
+const uint32_t FLASH_DATA_SIZE = (uint32_t)&__FLASH_DATA_SIZE;
+
+/* An imagined memory structure that is kept in flash */
+typedef struct
+{
+    uint8_t led1Enabled;
+    uint8_t led2Enabled;
+    uint8_t led3Enabled;
+    uint8_t led4Enabled;
+} ApplicationConfig;
+
+/*
+The config structure in SRAM. It is used during
+run-time.
+ */
+ApplicationConfig configInRam;
+
+/*
+The same config structure in FLASH.
+It is linked automatically into the .flashdata section and initialized
+for the first use.
+ */
+//#pragma DATA_SECTION(configInFlash, ".flashdata");
+const ApplicationConfig configInFlash =
+{
+    .led1Enabled = 0,
+    .led2Enabled = 0,
+    .led3Enabled = 0,
+    .led4Enabled = 0
+};
+
+
+/*
+A scratch buffer in SRAM. Unfortunately it consumes 4KiB RAM on the
+CC13xx because of the flash page size. It would be possible to create
+it on-the-fly on stack, but then the maximum stack size has to be adjusted
+accordingly.
+*/
+uint8_t scratchBuffer[FLASH_PAGE_SIZE];
+//uint8_t scratchBuffer[4096];
+
+/*
+Updates nBytes data in flash memory at destAddr.
+
+This function is a proof-of-concept implementation that demonstrates the usage of the
+driverlib flash API. It must not be used in a real-application.
+
+Existing data in the flash page is preserved.
+This implementation is straight-forward and there is a lot room for optimizations.
+For instance, one could check whether a write without erase is sufficient.
+In general, it is a good idea to accumulate some changes in RAM first and then overwrite
+everything at once instead of calling this function multiple times for the same page.
+
+Since there is always the danger of a power-loss/reset during writing,
+a ping-pong write algorithm should be used that distributes the data on two
+sections.
+
+*/
+void updateMemoryInFlash(void* destAddr, const void* sourceAddr, uint16_t nBytes)
+{
+    /* Calculate the start address of the destination page */
+    uint32_t pageStartAddr = (uint32_t)destAddr - ((uint32_t)destAddr % FLASH_PAGE_SIZE);
+
+    /* Check overall boundaries */
+    Assert_isTrue((uint32_t)destAddr >= FLASH_DATA_ADDR, 0);
+    Assert_isTrue(((uint32_t)destAddr + nBytes) < (FLASH_DATA_ADDR + FLASH_DATA_SIZE), 1);
+
+    /* Check that we do not cross a page boundary when FLASH_DATA_SIZE is more than one page */
+    Assert_isTrue(((uint32_t)destAddr - pageStartAddr + nBytes) <= FLASH_PAGE_SIZE, 2);
+
+    /*
+     Make sure that the flash functions from driverlib are either located in ROM or SRAM,
+     but not in FLASH. This is the normal case in TI-RTOS.
+     */
+    Assert_isTrue((uint32_t)&FlashProgram > (FLASH_BASE_ADDR + FLASH_SIZE), 3);
+
+    /* Rescue the data from flash before erasing the whole page */
+    memcpy(scratchBuffer, (void*)pageStartAddr, FLASH_PAGE_SIZE);
+
+    /* Merge old and new data in the scratch buffer */
+    uint32_t pageOffset = (uint32_t)destAddr - pageStartAddr;
+    memcpy(scratchBuffer + pageOffset, sourceAddr, nBytes);
+
+    /* Disable flash cache */
+    VIMSModeSet(VIMS_BASE, VIMS_MODE_DISABLED);
+    while (VIMSModeGet(VIMS_BASE) != VIMS_MODE_DISABLED);
+
+    /* Erase the whole page */
+    FlashSectorErase((uint32_t)pageStartAddr);
+
+    /* Write back from the scratch buffer */
+    FlashProgram(scratchBuffer, pageStartAddr, FLASH_PAGE_SIZE);
+
+    /* Re-enable flash cache */
+    VIMSModeSet(VIMS_BASE, VIMS_MODE_ENABLED);
+}
+
+void flash_displayAddresses() {
+    /* Calculate the start address of the destination page */
+	  void* destAddr = &configInFlash;
+    uint32_t pageStartAddr = (uint32_t)destAddr - ((uint32_t)destAddr % FLASH_PAGE_SIZE);
+
+    System_printf("addr %08x pagestart %08x\n",destAddr,pageStartAddr);
+
+    System_printf("func %08x flash base %08x flash size %08x flash top %08x\n",
+    		(uint32_t)&FlashProgram,FLASH_BASE_ADDR,FLASH_SIZE,FLASH_BASE_ADDR+FLASH_SIZE);
+    /* Check overall boundaries */
+
+    /*
+     Make sure that the flash functions from driverlib are either located in ROM or SRAM,
+     but not in FLASH. This is the normal case in TI-RTOS.
+     */
+}
+
+
+

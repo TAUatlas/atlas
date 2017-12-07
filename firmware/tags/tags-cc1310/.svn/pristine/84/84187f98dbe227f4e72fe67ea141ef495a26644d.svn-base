@@ -1,0 +1,25 @@
+/*
+ * radio_setup.h
+ *
+ *  Created on: 16 באוג 2016
+ *      Author: stoledo
+ */
+
+#ifndef RADIO_SETUP_H_
+#define RADIO_SETUP_H_
+
+#include <driverlib/rf_common_cmd.h>
+#include <driverlib/rf_prop_cmd.h>
+
+extern void radioSetup_frequency(uint32_t f,
+		                             rfc_CMD_FS_t* fs,
+																 rfc_CMD_PROP_RADIO_DIV_SETUP_t* div);
+extern void radioSetup_modulation(uint8_t modulation_type,
+                              		uint32_t symbolrate,
+		                              uint32_t deviation,
+																	uint32_t rxbw,
+																	rfc_CMD_PROP_RADIO_DIV_SETUP_t* div);
+extern void radioSetup_txPower(int8_t dbm,
+														   rfc_CMD_PROP_RADIO_DIV_SETUP_t* div);
+
+#endif /* RADIO_SETUP_H_ */

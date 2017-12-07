@@ -1,0 +1,12 @@
+"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/family/arm/cc26xx/Boot.c", line 36: fatal error: cannot open source file "driverlib/sys_ctrl.h"
+1 catastrophic error detected in the compilation of "C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/family/arm/cc26xx/Boot.c".
+Compilation terminated.
+gmake[1]: *** [rom_sysbios.obj] Error 1
+gmake: *** [C:/Users/NIRZAI~1/workspace_v7/tags-cc1310/src/sysbios/rom_sysbios.aem3] Error 2
+error: xdc.cfg.SourceDir: "C:/ti/xdctools_3_32_00_06_core/packages/xdc/cfg/SourceDir.xs", line 209: xdc.cfg.SourceDir : Build of generated source libraries failed: exit status = 2:
+
+js: "C:/ti/xdctools_3_32_00_06_core/packages/xdc/cfg/Main.xs", line 160: Error: Configuration failed!
+xdctools_3_32_00_06_core\gmake.exe: *** [package/cfg/tags-cc1310_pem3.xdl] Error 1
+xdctools_3_32_00_06_core\gmake.exe: *** Deleting file `package/cfg/tags-cc1310_pem3.xdl'
+xdctools_3_32_00_06_core\gmake.exe: *** [package/cfg/tags-cc1310_pem3.xdl] Deleting file `package/cfg/tags-cc1310_pem3.h'
+xdctools_3_32_00_06_core\gmake.exe: *** [package/cfg/tags-cc1310_pem3.xdl] Deleting file `package/cfg/tags-cc1310_pem3.c'

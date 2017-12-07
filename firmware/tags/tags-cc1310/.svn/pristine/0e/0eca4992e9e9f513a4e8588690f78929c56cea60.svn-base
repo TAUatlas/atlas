@@ -1,0 +1,126 @@
+#include <xdc/runtime/System.h>
+
+#include <driverlib/rf_common_cmd.h>
+#include <driverlib/rf_prop_cmd.h>
+
+#include "radio_setup.h"
+
+#define DEVIATION_STEP_SIZE  250
+
+static uint16_t bands_los[][2] = {
+		{ 315, 14 },
+		{ 433, 10 },
+		{ 868,  5 },
+		{ 915,  5 },
+		{   0,  0 }
+};
+
+extern void radioSetup_frequency(uint32_t f,
+		                             rfc_CMD_FS_t* fs,
+																 rfc_CMD_PROP_RADIO_DIV_SETUP_t* div) {
+
+	fs->frequency = f / 1000000;
+	fs->fractFreq = (uint16_t) (((double) (f - 1000000*(fs->frequency)) / 1e6) * 65535);
+
+	System_printf("f=%d full %d frac ==> %.6f\n",
+			          fs->frequency,fs->fractFreq,
+								(double)(fs->frequency)+(double)(fs->fractFreq)/65535.0);
+
+	if (f < 1000000000) {
+		int32_t mindiff  = -1;
+		int     minindex = 0;
+		int i;
+		for (i=0; bands_los[i][0]; i++) {
+			int32_t diff = f - bands_los[i][0]*1000000;
+			if (diff < 0) diff = -diff;
+			if (mindiff == -1 || diff < mindiff) {
+				mindiff  = diff;
+				minindex = i;
+			}
+		}
+		System_printf("sub-1GHz f=%d band %d div %d\n",f,bands_los[minindex][0],bands_los[minindex][1]);
+		div->centerFreq = bands_los[minindex][0];
+		div->loDivider  = bands_los[minindex][1];
+	}
+}
+
+static uint16_t cc1310_rxbw[][2] = {
+		{ 4240, 52 },
+		{ 3470, 51 },
+		{ 2800, 50 },
+		{ 2120, 49 },
+		{ 1740, 48 },
+		{ 1410, 47 },
+		{ 1060, 46 },
+		{  870, 45 },
+		{  700, 44 },
+		{  530, 43 },
+		{  430, 42 },
+		{  350, 41 },
+		{  260, 40 },
+		{  220, 39 },
+		{  180, 38 },
+		{  130, 37 },
+		{  110, 36 },
+		{   88, 35 },
+		{   66, 34 },
+		{   55, 33 },
+		{   45, 32 },
+		{    0, 32 }
+};
+
+extern void radioSetup_modulation(uint8_t modulation_type,
+                              		uint32_t symbolrate,
+		                              uint32_t deviation,
+																	uint32_t rxbw,
+																	rfc_CMD_PROP_RADIO_DIV_SETUP_t* div) {
+
+	div->modulation.modType   = modulation_type;
+	div->modulation.deviation = deviation / DEVIATION_STEP_SIZE;
+
+	uint8_t  p;
+	uint32_t r;
+
+	for (p=15; p>=4; p--) {
+		r = (uint32_t) (((double) symbolrate * 1048576 * p) / 24e6);
+		System_printf("symbolrate %d p=%d r=%d\n",symbolrate,r,p);
+		if (r < 2097152) {
+			div->symbolRate.preScale = p;
+			div->symbolRate.rateWord = r;
+			break;
+		}
+	}
+
+	int i;
+	for (i=0; rxbw <= 1000*cc1310_rxbw[i+1][0]; i++);
+	System_printf("rxbw %d >= %d (%d)\n", rxbw, cc1310_rxbw[i][0], cc1310_rxbw[i][1]);
+	div->rxBw = cc1310_rxbw[i][1];
+}
+
+// smartrf also shows -10dBm --> 0x08c0
+static const int8_t power_setting_start = 0;
+static const uint16_t power_setting[] = {
+	0x0041, // 0dBm
+	0x10c3,
+	0x1042,
+	0x14c4, // 0dBm
+	0x18c5,
+	0x18c6, // 5
+	0x1cc7,
+	0x20c9,
+	0x24cb,
+	0x2ccd, // 9
+	0x38d3, // 10dBm
+	0x50da, // 11
+	0xb818, // 12
+	0xa73f, // 12.5dBm
+	0xa73f // 14dBm (if VDDR boost)
+};
+
+extern void radioSetup_txPower(int8_t dbm,
+															rfc_CMD_PROP_RADIO_DIV_SETUP_t* div) {
+
+	div->txPower = power_setting[ dbm - power_setting_start ];
+}
+
+

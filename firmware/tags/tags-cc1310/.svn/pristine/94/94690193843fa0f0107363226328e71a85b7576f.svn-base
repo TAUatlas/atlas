@@ -1,0 +1,489 @@
+               .deffile adi_defs.asm
+               .deffile ddi_defs.asm
+               .deffile reg_defs.asm
+               .deffile sce_defs.asm
+               
+               ; Number of supported tasks
+               .define TASK_COUNT      1
+               
+               ; Resource-specified definitions, if any
+               ; (None)
+               
+               
+               .segment begin "Framework"
+               
+               
+               VectorTable:
+0000 ---- 1408                         jsr         PowerUp
+0001 ---- 040c                         jmp         TaskCtrlReqVector
+0002 ---- 1408                         jsr         PowerUp
+0003 ---- 042c                         jmp         AonRtcCh2Vector
+0004 ---- 1408                         jsr         PowerUp
+0005 ---- 0447                         jmp         Event0Vector
+0006 ---- 1408                         jsr         PowerUp
+0007 ---- 044d                         jmp         TaskAlertAckVector
+               
+               
+               
+               
+               PowerUp:
+                                       ; Deassert the power-down request
+0008 ---- 4436                         iobclr      #0, [#IOP_WUC_PWRDWNREQ]
+               
+                                       ; Wait for it to take effect
+0009 ---- 2437 /waitForPdAck:          iobtst      #0, [#IOP_WUC_PWRDWNACK]
+000a ---- aefe                         biob1       /waitForPdAck
+               
+               FwEmptyFunc:            ; Done
+000b ---- adb7                         rts
+               
+               
+               
+               
+               TaskCtrlReqVector:
+                                       ; Clear the vector flag
+000c ---- 6442                         iobset      #0, [#IOP_EVCTL_VECFLAGSCLR]
+               
+                                       ; For each task ...
+000d ---- 7000                         ld          R7, #0
+               /loop:
+                                           ; Save the task ID
+000e ---- 7c6b                             st          R7, [#fwCtrlInt/taskId]
+               
+                                           ; Handle initialize request, if any
+000f ---- 6871                             ld          R6, [#fwCtrlExt/bvTaskInitializeReq]
+0010 ---- 0068                             ld          R0, #pFwTaskInitializeFuncTable
+0011 ---- 1425                             jsr         /handleReq
+               
+                                           ; Handle execute request, if any
+0012 ---- 6872                             ld          R6, [#fwCtrlExt/bvTaskExecuteReq]
+0013 ---- 0069                             ld          R0, #pFwTaskExecuteFuncTable
+0014 ---- 1425                             jsr         /handleReq
+               
+                                           ; Handle terminate request, if any
+0015 ---- 6873                             ld          R6, [#fwCtrlExt/bvTaskTerminateReq]
+0016 ---- 006a                             ld          R0, #pFwTaskTerminateFuncTable
+0017 ---- 1425                             jsr         /handleReq
+               
+                                           ; Move on to the next task
+0018 ---- 786b                             ld          R7, [#fwCtrlInt/taskId]
+0019 ---- f801                             add         R7, #1
+               
+001a ---- fa01                         cmp         R7, #TASK_COUNT
+001b ---- bef2                         bneq        /loop
+               
+                                       ; Update which tasks are ...
+001c ---- 786f                         ld          R7, [#fwCtrlExt/bvActiveTasks]
+                                       ; ... currently active ...
+001d ---- 6871                         ld          R6, [#fwCtrlExt/bvTaskInitializeReq]
+001e ---- fd0e                         or          R7, R6
+                                       ; ... and inactive ...
+001f ---- 6873                         ld          R6, [#fwCtrlExt/bvTaskTerminateReq]
+0020 ---- ed92                         inv         R6
+0021 ---- fd06                         and         R7, R6
+0022 ---- 7c6f                         st          R7, [#fwCtrlExt/bvActiveTasks]
+               
+                                       ; We're READY for another request
+0023 ---- 642d                         iobset      #IOB_EVCTL_SWEV_READY, [#IOP_EVCTL_SWEVSET]
+               
+                                       ; Generate an ALERT interrupt if needed before powering back down
+0024 ---- 0450                         jmp         GenAlertInterrupt;
+               
+               /handleReq:
+                                       ; Restore the task ID, and load the function pointer (here to avoid pipeline hazard)
+0025 ---- 786b                         ld          R7, [#fwCtrlInt/taskId]
+0026 ---- 8f1f                         ld          R0, [R7+R0]
+               
+                                       ; Skip this request?
+0027 ---- ed8f                         lsr         R6, R7
+0028 ---- ec01                         tst         R6, #0x0001
+0029 ---- be01                         bnz         /noSkip
+002a ---- adb7                             rts
+               /noSkip:
+                                       ; Make the call by jump, with return (rts) in the "called" function
+002b ---- 8db7                         jmp         R0
+               
+               
+               
+               
+               AonRtcCh2Vector:
+                                       ; Start clearing the RTC event
+002c ---- 6630                         iobset      #IOB_WUC_WUEV_RTC, [#IOP_WUC_WUEVCLR]
+               
+                                       ; Clear the vector flag
+002d ---- 6542                         iobset      #1, [#IOP_EVCTL_VECFLAGSCLR]
+               
+                                       ; For each task (R0 is the current task ID) ...
+002e ---- 0000                         ld          R0, #0
+               /loop:
+                                           ; ... that is active ...
+002f ---- 186f                             ld          R1, [#fwCtrlExt/bvActiveTasks]
+0030 ---- 9d88                             lsr         R1, R0
+0031 ---- 9c01                             tst         R1, #0x0001
+0032 ---- b60d                             bz          /skip
+               
+                                               ; Fetch number of RTC intervals until next execution
+0033 ---- 1067                                 ld          R1, #pFwTaskExecuteScheduleTable
+0034 ---- af19                                 ld          R2, [R1+R0]
+               
+                                               ; If not already 0, decrement and store. If then 0 ...
+0035 ---- aa00                                 cmp         R2, #0
+0036 ---- b609                                 beq         /skip
+0037 ---- a8ff                                 add         R2, #-1
+0038 ---- af39                                 st          R2, [R1+R0]
+0039 ---- be06                                 bnz         /skip
+               
+                                                   ; ... execute the task
+003a ---- 0c6b                                     st          R0, [#fwCtrlInt/taskId]
+003b ---- 8869                                     add         R0, #pFwTaskExecuteFuncTable
+003c ---- 8f08                                     ld          R0, [R0]
+                                                   ; Insert NOP to avoid pipeline hazard
+003d ---- fd47                                     nop
+003e ---- 9db7                                     jsr         R0
+003f ---- 086b                                     ld          R0, [#fwCtrlInt/taskId]
+               /skip:
+                                           ; Move on to the next task
+0040 ---- 8801                             add         R0, #1
+               
+0041 ---- 8a01                         cmp         R0, #TASK_COUNT
+0042 ---- beec                         bneq        /loop
+               
+                                       ; Wait for the ACK event to be cleared
+0043 ---- 262f /waitOnRtcClearing:     iobtst      #IOB_WUC_WUEV_RTC, [#IOP_WUC_WUEVFLAGS]
+0044 ---- aefe                         biob1       /waitOnRtcClearing
+0045 ---- 4630                         iobclr      #IOB_WUC_WUEV_RTC, [#IOP_WUC_WUEVCLR]
+               
+                                       ; Generate an ALERT interrupt if needed
+0046 ---- 0450                         jmp         GenAlertInterrupt;
+               
+               
+               
+               
+               Event0Vector:
+                                       ; Disable and clear the vector flag
+0047 ---- 5527                         iobclr      #IOB_EVCTL_VECCFG1_VEC2_EN, [#IOP_EVCTL_VECCFG1]
+0048 ---- 6642                         iobset      #2, [#IOP_EVCTL_VECFLAGSCLR]
+               
+                                       ; Set the task ID
+0049 ---- 0000                         ld          R0, #0
+004a ---- 0c6b                         st          R0, [#fwCtrlInt/taskId]
+               
+                                       ; Jump to the event task code
+004b ---- 1486                         jsr         hallSensor/event0
+               
+                                       ; Generate an ALERT interrupt if needed
+004c ---- 0450                         jmp         GenAlertInterrupt;
+               
+               
+               
+               
+               TaskAlertAckVector:
+                                       ; Clear the vector flag
+004d ---- 6742                         iobset      #3, [#IOP_EVCTL_VECFLAGSCLR]
+               
+                                       ; Re-enable generation of ALERT interrupts
+004e ---- 03ff                         ld          R0, #-1
+004f ---- 0c6d                         st          R0, [#fwCtrlInt/alertGenMask]
+               
+                                       ; Fall through to GenAlertInterrupt to generate another ALERT interrupt if needed
+               
+               
+               
+               
+               GenAlertInterrupt:
+                                       ; Do we have any ALERT-generating flags pending?
+0050 ---- 786c                         ld          R7, [#fwCtrlInt/bvTaskIoAlert]
+               
+                                       ; Skip if the last I/O ALERT interrupt has not been acknowledged
+0051 ---- 686d                         ld          R6, [#fwCtrlInt/alertGenMask]
+0052 ---- ed37                         tst         R6, R7
+0053 ---- b605                         bz          /skip
+               
+                                           ; Transfer I/O flags from internal to external
+0054 ---- 0000                             ld          R0, #0
+0055 ---- 0c6c                             st          R0, [#fwCtrlInt/bvTaskIoAlert]
+0056 ---- 7c70                             st          R7, [#fwCtrlExt/bvTaskIoAlert]
+               
+                                           ; Generate the ALERT interrupt, and clear the generation mask
+0057 ---- 652d                             iobset      #IOB_EVCTL_SWEV_ALERT, [#IOP_EVCTL_SWEVSET]
+0058 ---- 0c6d                             st          R0, [#fwCtrlInt/alertGenMask]
+               /skip:
+                                       ; Fall through to PowerDown ...
+               
+               
+               
+               
+               PowerDown:
+                                       ; If there are no unacknowledged ALERTs and no vectors pending ...
+0059 ---- 786d                         ld          R7, [#fwCtrlInt/alertGenMask]
+005a ---- 686e                         ld          R6, [#fwCtrlInt/alertCanPdAuxMask]
+005b ---- fd0e                         or          R7, R6
+005c ---- f801                         add         R7, #1 ; 0xFFFF -> 0x0000
+005d ---- e92b                         in          R6, [#IOP_EVCTL_VECFLAGS]
+005e ---- fd0e                         or          R7, R6
+005f ---- be01                         bnz         /noPowerDown
+               
+                                           ; Assert the power-down request. We'll make sure that it has taken effect
+                                           ; or been completely ignored when waking up again
+0060 ---- 6436                             iobset      #0, [#IOP_WUC_PWRDWNREQ]
+               /noPowerDown:
+                                       ; Sleep until the next event
+0061 ---- bdb7 sleepInstr:             sleep
+               
+               
+               
+               
+0062 ---- 241a AdiDdiAcquire:          iobtst      #0, [#IOP_SMPH_SMPH0]
+0063 ---- a6fe                         biob0       AdiDdiAcquire
+0064 ---- adb7                         rts
+               
+0065 ---- 641a AdiDdiRelease:          iobset      #0, [#IOP_SMPH_SMPH0]
+0066 ---- adb7                         rts
+               
+               
+               
+               
+               pFwTaskExecuteScheduleTable:
+0067 ---- 0000                         dw          #0
+               pFwTaskInitializeFuncTable:
+0068 ---- 0077                         dw          #hallSensor/initialize
+               pFwTaskExecuteFuncTable:
+0069 ---- 0085                         dw          #hallSensor/execute
+               pFwTaskTerminateFuncTable:
+006a ---- 00c2                         dw          #hallSensor/terminate
+               
+               
+               ; Internal control data
+               fwCtrlInt:
+006b ---- 0000 /taskId:                dw          #0      ; ID of the currently running task
+006c ---- 0000 /bvTaskIoAlert:         dw          #0x0000 ; LSB = Normal data exchange, MSB = Overflow or underflow
+006d ---- ffff /alertGenMask:          dw          #0xFFFF ; Can generate an ALERT interrupt now? (0xFFFF = yes, 0x0000 = no)
+006e ---- 0000 /alertCanPdAuxMask:     dw          #0x0000 ; Can power down AUX domain after ALERT interrupt generation? (0xFFFF = yes, 0x0000 = no)
+               
+               ; External control data, shared with the driver
+               fwCtrlExt:
+006f ---- 0000 /bvActiveTasks:         dw          #0x0000 ; Indicates which tasks are currently active
+0070 ---- 0000 /bvTaskIoAlert:         dw          #0x0000 ; LSB = Normal data exchange, MSB = Overflow or underflow
+0071 ---- 0000 /bvTaskInitializeReq:   dw          #0x0000 ; Requests tasks to start
+0072 ---- 0000 /bvTaskExecuteReq:      dw          #0x0000 ; Requests tasks to execute once immediately
+0073 ---- 0000 /bvTaskTerminateReq:    dw          #0x0000 ; Requests tasks to stop
+               
+               
+               .segment end "Framework"
+               
+               
+               fwTaskDataStructures:
+               .segment begin "Task: Hall Sensor"
+               hallSensor/cfg:
+               hallSensor/cfg/m:
+0074 ---- 000a                         dw          #10
+               hallSensor/input:
+               hallSensor/output:
+               hallSensor/output/state:
+0075 ---- 0000                         dw          #0
+               hallSensor/state:
+               hallSensor/state/state:
+0076 ---- 0000                         dw          #0
+               .segment end "Task: Hall Sensor"
+               
+               
+               .segment begin "Task: Hall Sensor"
+               hallSensor/initialize:
+               ;? state.state = 5; // reservoir chapacitor is assumed to be charged by DC power
+0077 ---- 0005                         ld          R0, #5
+0078 ---- 0c76                         st          R0, [#hallSensor/state/state]
+               ;? output.state = 5;
+0079 ---- 0005                         ld          R0, #5
+007a ---- 0c75                         st          R0, [#hallSensor/output/state]
+               ;? 
+               ;? // Set the gate high to turn the N-channel mosfet on
+               ;? gpioSetOutput(AUXIO_O_MOSFET_GATE);
+007b ---- 660f                         iobset      #(10 & 0x7), [#(IOP_AIODIO0_GPIODOUT + (10 >> 3))]
+               ;? 
+               ;? //gpioClearOutput(AUXIO_O_GLED);
+               ;? //gpioSetOutput(AUXIO_O_RLED);
+               ;? 
+               ;? // wait for the cap to charge
+               ;? evhSetupTimerTrigger(0, cfg.m, 12);
+007c ---- 0874                         ld          R0, [#hallSensor/cfg/m]
+007d ---- 8b0d                         out         R0, [#IOP_TIMER_T1TARGET]
+007e 8608 70c2                         ld          R7, #(((12 << IOB_TIMER_TXCFG_PRE) | TIMER_TXCFG_TICK_SRC_RTC_4KHZ) | BV_TIMER_TXCFG_MODE_TICK)
+0080 ---- fb0a                         out         R7, [#IOP_TIMER_T1CFG]
+0081 ---- 7025                         ld          R7, #(BV_EVCTL_VECCFG1_VEC2_EN | (EVCTL_VECEVSEL_TIMER1_EV << IOB_EVCTL_VECCFG1_VEC2_EV))
+0082 ---- 14c3                         jsr         EvhSetupTrigger
+0083 ---- 6444                         iobset      #0, [#IOP_TIMER_T1CTL]
+               hallSensor/initializeDone:
+0084 ---- adb7                         rts         
+               
+               
+               
+               
+               hallSensor/execute:
+               hallSensor/executeDone:
+0085 ---- adb7                         rts         
+               
+               
+               
+               
+               hallSensor/event0:
+               ;? // If the capacitor is charged
+               ;? if (state.state == 1) {
+0086 ---- 0876                         ld          R0, [#hallSensor/state/state]
+0087 ---- 8a01                         cmp         R0, #1
+0088 ---- be08                         bneq        /id0040
+               ;?     // the capacitor is charged, the event signals appearance of the magnet
+               ;?     state.state = 2; // waiting for system core to stop its tasks
+0089 ---- 0002                             ld          R0, #2
+008a ---- 0c76                             st          R0, [#hallSensor/state/state]
+               ;?     output.state = 2;
+008b ---- 0002                             ld          R0, #2
+008c ---- 0c75                             st          R0, [#hallSensor/output/state]
+               ;?     
+               ;?     // BOTH; MCU STOP COMMAND
+               ;?     //gpioSetOutput(AUXIO_O_GLED);
+               ;?     //gpioSetOutput(AUXIO_O_RLED);
+               ;?     
+               ;?     fwGenAlertInterrupt();
+008d ---- 086c                             ld          R0, [#fwCtrlInt/bvTaskIoAlert]
+008e ---- 8201                             or          R0, #(1 << 0)
+008f ---- 0c6c                             st          R0, [#fwCtrlInt/bvTaskIoAlert]
+               ;?     //evhSetupTimerTrigger(0, 2, 12);
+               ;?     
+               ;? } else if (state.state == 2) {
+0090 ---- 04c1                         jmp         /id0042
+               /id0040:
+0091 ---- 0876                         ld          R0, [#hallSensor/state/state]
+0092 ---- 8a02                         cmp         R0, #2
+0093 ---- be08                         bneq        /id0046
+               ;?     // system core finished stopping its tasks, can disconnect the cap
+               ;?     state.state = 3;
+0094 ---- 0003                             ld          R0, #3
+0095 ---- 0c76                             st          R0, [#hallSensor/state/state]
+               ;?     output.state = 3;
+0096 ---- 0003                             ld          R0, #3
+0097 ---- 0c75                             st          R0, [#hallSensor/output/state]
+               ;?     
+               ;?     // Set the gate low to turn the N-channel mosfet off
+               ;?     gpioClearOutput(AUXIO_O_MOSFET_GATE);
+0098 ---- 460f                             iobclr      #(10 & 0x7), [#(IOP_AIODIO0_GPIODOUT + (10 >> 3))]
+               ;?     
+               ;?     // RED; WAITING FOR MAGNET REMOVAL
+               ;?     //gpioClearOutput(AUXIO_O_GLED);
+               ;?     //gpioSetOutput(AUXIO_O_RLED);
+               ;?     
+               ;?     // configure the Hall sensor input pin to generate an event when the
+               ;?     // magnet is removed (sensor is not in the active state)
+               ;?     evhSetupGpioTrigger(0, AUXIO_I_HALL_OUTPUT, 1, EVH_GPIO_TRIG_ON_MATCH);
+0099 ---- 7034                             ld          R7, #((BV_EVCTL_VECCFG1_VEC2_EN | ((EVCTL_VECEVSEL_AUXIO0 + 7) << IOB_EVCTL_VECCFG1_VEC2_EV)) | ((1 == 0) << IOB_EVCTL_VECCFG1_VEC2_POL))
+009a ---- 14c3                             jsr         EvhSetupTrigger
+               ;? } else if (state.state == 3) {
+009b ---- 04c1                         jmp         /id0048
+               /id0046:
+009c ---- 0876                         ld          R0, [#hallSensor/state/state]
+009d ---- 8a03                         cmp         R0, #3
+009e ---- be0e                         bneq        /id0052
+               ;?     // the capacitor may be discharged, the event signals removal of the magnet
+               ;?     state.state = 4; // waiting for the capacitor to charge
+009f ---- 0004                             ld          R0, #4
+00a0 ---- 0c76                             st          R0, [#hallSensor/state/state]
+               ;?     output.state = 4;
+00a1 ---- 0004                             ld          R0, #4
+00a2 ---- 0c75                             st          R0, [#hallSensor/output/state]
+               ;?     
+               ;?     // turn on the MOSFET to start charging
+               ;?     gpioSetOutput(AUXIO_O_MOSFET_GATE);
+00a3 ---- 660f                             iobset      #(10 & 0x7), [#(IOP_AIODIO0_GPIODOUT + (10 >> 3))]
+               ;?     
+               ;?     // BOTH; MAGNET REMOVED, CHARGING
+               ;?     //gpioSetOutput(AUXIO_O_GLED);
+               ;?     //gpioSetOutput(AUXIO_O_RLED);
+               ;?     
+               ;?     
+               ;?     // Start 10s charging interval
+               ;?     // delay is m * 2^e * (1/4000) seconds
+               ;?     evhSetupTimerTrigger(0, cfg.m, 12);
+00a4 ---- 0874                             ld          R0, [#hallSensor/cfg/m]
+00a5 ---- 8b0d                             out         R0, [#IOP_TIMER_T1TARGET]
+00a6 8608 70c2                             ld          R7, #(((12 << IOB_TIMER_TXCFG_PRE) | TIMER_TXCFG_TICK_SRC_RTC_4KHZ) | BV_TIMER_TXCFG_MODE_TICK)
+00a8 ---- fb0a                             out         R7, [#IOP_TIMER_T1CFG]
+00a9 ---- 7025                             ld          R7, #(BV_EVCTL_VECCFG1_VEC2_EN | (EVCTL_VECEVSEL_TIMER1_EV << IOB_EVCTL_VECCFG1_VEC2_EV))
+00aa ---- 14c3                             jsr         EvhSetupTrigger
+00ab ---- 6444                             iobset      #0, [#IOP_TIMER_T1CTL]
+               ;? } else if (state.state == 4) {
+00ac ---- 04c1                         jmp         /id0054
+               /id0052:
+00ad ---- 0876                         ld          R0, [#hallSensor/state/state]
+00ae ---- 8a04                         cmp         R0, #4
+00af ---- be08                         bneq        /id0059
+               ;?     // the capacitor is now charged, notify system core
+               ;?     state.state = 5; // reservoir chapacitor is assumed to be charged by DC power
+00b0 ---- 0005                             ld          R0, #5
+00b1 ---- 0c76                             st          R0, [#hallSensor/state/state]
+               ;?     output.state = 5;
+00b2 ---- 0005                             ld          R0, #5
+00b3 ---- 0c75                             st          R0, [#hallSensor/output/state]
+               ;?     
+               ;?     // RED; MCU START COMMAND
+               ;?     //gpioClearOutput(AUXIO_O_GLED);
+               ;?     //gpioSetOutput(AUXIO_O_RLED);
+               ;?     
+               ;?     fwGenAlertInterrupt();
+00b4 ---- 086c                             ld          R0, [#fwCtrlInt/bvTaskIoAlert]
+00b5 ---- 8201                             or          R0, #(1 << 0)
+00b6 ---- 0c6c                             st          R0, [#fwCtrlInt/bvTaskIoAlert]
+               ;?     //evhSetupTimerTrigger(0, 2, 12);
+               ;? } else if (state.state == 5) {
+00b7 ---- 04c1                         jmp         /id0061
+               /id0059:
+00b8 ---- 0876                         ld          R0, [#hallSensor/state/state]
+00b9 ---- 8a05                         cmp         R0, #5
+00ba ---- be06                         bneq        /id0065
+               ;?     // cpu started, configure sensor pin again
+               ;?     state.state = 1; // reservoir chapacitor is assumed to be charged by DC power
+00bb ---- 0001                             ld          R0, #1
+00bc ---- 0c76                             st          R0, [#hallSensor/state/state]
+               ;?     output.state = 1;
+00bd ---- 0001                             ld          R0, #1
+00be ---- 0c75                             st          R0, [#hallSensor/output/state]
+               ;?     
+               ;?     // GREEN; WAITING FOR MAGNET ATTACHMENT
+               ;?     //gpioSetOutput(AUXIO_O_GLED);
+               ;?     //gpioClearOutput(AUXIO_O_RLED);
+               ;?     
+               ;?     // configure the Hall sensor input pin to generate an event when the
+               ;?     // magnet gets near (sensor is in the active state)
+               ;?     evhSetupGpioTrigger(0, AUXIO_I_HALL_OUTPUT, 0, EVH_GPIO_TRIG_ON_MATCH);
+00bf ---- 7074                             ld          R7, #((BV_EVCTL_VECCFG1_VEC2_EN | ((EVCTL_VECEVSEL_AUXIO0 + 7) << IOB_EVCTL_VECCFG1_VEC2_EV)) | ((0 == 0) << IOB_EVCTL_VECCFG1_VEC2_POL))
+00c0 ---- 14c3                             jsr         EvhSetupTrigger
+               ;? }
+               /id0065:
+               /id0061:
+               /id0054:
+               /id0048:
+               /id0042:
+               hallSensor/event0Done:
+00c1 ---- adb7                         rts         
+               
+               
+               
+               
+               hallSensor/terminate:
+               hallSensor/terminateDone:
+00c2 ---- adb7                         rts         
+               .segment end "Task: Hall Sensor"
+               
+               
+               .segment begin "Procedure Libary"
+               EvhSetupTrigger:
+                                       ; Disable and clear the vector flag
+00c3 ---- 5527                         iobclr      #IOB_EVCTL_VECCFG1_VEC2_EN, [#IOP_EVCTL_VECCFG1]
+00c4 ---- 6642                         iobset      #2, [#IOP_EVCTL_VECFLAGSCLR]
+               
+                                       ; Configure and enable the vector flag (+ fixed configuration for channel 3)
+00c5 862b f200                         or          R7, #(BV_EVCTL_VECCFG1_VEC3_EN | (EVCTL_VECEVSEL_AON_SW << IOB_EVCTL_VECCFG1_VEC3_EV))
+00c7 ---- fb27                         out         R7, [#IOP_EVCTL_VECCFG1]
+00c8 ---- adb7                         rts
+               .segment end "Procedure Libary"
+               
+
+; Generated by LAP-SIVAN04 at 2017-08-03 15:13:25.981

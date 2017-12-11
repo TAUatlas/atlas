@@ -1,17 +1,17 @@
 # FIXED
 
 leds.obj: ../leds.c
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdlib.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/time.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/abi_prefix.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/time.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/abi_prefix.h
 leds.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h
 leds.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Timestamp.h
 leds.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/xdc.h
 leds.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Types.h
@@ -210,13 +210,13 @@ leds.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/IInstance.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/interfaces/ITimer.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/hal/package/Timer_TimerProxy.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/PIN.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdbool.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdbool.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 leds.obj: ../config.h
 leds.obj: ../Board.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/Power.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/utils/List.h
-leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+leds.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 leds.obj: ../CC1310_LAUNCHXL.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/ioc.h
 leds.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_types.h
@@ -237,17 +237,17 @@ leds.obj: ../leds.h
 leds.obj: ../config.h
 
 ../leds.c: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdlib.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/time.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/abi_prefix.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/time.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/abi_prefix.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Timestamp.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/xdc.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Types.h: 
@@ -446,13 +446,13 @@ C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/IInstance.h:
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/interfaces/ITimer.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/hal/package/Timer_TimerProxy.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/PIN.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdbool.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdbool.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 ../config.h: 
 ../Board.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/Power.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/utils/List.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 ../CC1310_LAUNCHXL.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/ioc.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_types.h: 

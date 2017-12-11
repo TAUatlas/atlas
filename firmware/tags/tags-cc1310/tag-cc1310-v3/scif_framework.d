@@ -2,8 +2,8 @@
 
 scif_framework.obj: ../scif_framework.c
 scif_framework.obj: ../scif_framework.h
-scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h
-scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdbool.h
+scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h
+scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdbool.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_types.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_chip_def.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_memmap.h
@@ -18,8 +18,8 @@ scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_event.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_ints.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_ioc.h
-scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/string.h
-scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h
+scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h
+scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h
 scif_framework.obj: ../scif_osal_tirtos.c
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_nvic.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/cpu.h
@@ -28,8 +28,8 @@ scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_
 scif_framework.obj: ../scif_osal_tirtos.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Semaphore.h
 scif_framework.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h
-scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h
-scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h
+scif_framework.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h
 scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h
@@ -202,8 +202,8 @@ scif_framework.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_
 
 ../scif_framework.c: 
 ../scif_framework.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdbool.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdbool.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_types.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_chip_def.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_memmap.h: 
@@ -218,8 +218,8 @@ C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_a
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_event.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_ints.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_ioc.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/string.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h: 
 ../scif_osal_tirtos.c: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_nvic.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/cpu.h: 
@@ -228,8 +228,8 @@ C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverli
 ../scif_osal_tirtos.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Semaphore.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h: 

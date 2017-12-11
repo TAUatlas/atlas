@@ -1,14 +1,14 @@
 # FIXED
 
 i2c_sensors.obj: ../i2c_sensors.c
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdlib.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/time.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/abi_prefix.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/time.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/abi_prefix.h
 i2c_sensors.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h
@@ -210,16 +210,16 @@ i2c_sensors.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/IInstance.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/interfaces/ITimer.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/hal/package/Timer_TimerProxy.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/I2C.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdbool.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdbool.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/SPI.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/PIN.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: ../Board.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/Power.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/utils/List.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: ../CC1310_LAUNCHXL.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/ioc.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_types.h
@@ -250,18 +250,18 @@ i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Semaphore.h
 i2c_sensors.obj: ../uart.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/UART.h
-i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Mailbox.h
 
 ../i2c_sensors.c: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdlib.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/time.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/abi_prefix.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/time.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/abi_prefix.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h: 
@@ -463,16 +463,16 @@ C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/IInstance.h:
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/interfaces/ITimer.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/hal/package/Timer_TimerProxy.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/I2C.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdbool.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdbool.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/SPI.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/PIN.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 ../Board.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/Power.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/utils/List.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 ../CC1310_LAUNCHXL.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/ioc.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/inc/hw_types.h: 
@@ -503,5 +503,5 @@ C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbi
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Semaphore.h: 
 ../uart.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/UART.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Mailbox.h: 

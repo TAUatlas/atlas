@@ -6,12 +6,12 @@ buffers.obj: ../buffers.h
 buffers.obj: ../config.h
 buffers.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Mailbox.h
 buffers.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h
-buffers.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h
-buffers.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+buffers.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h
+buffers.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 buffers.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h
 buffers.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h
 buffers.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h
-buffers.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h
+buffers.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h
 buffers.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/xdc.h
 buffers.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Types.h
 buffers.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Types__prologue.h
@@ -178,12 +178,12 @@ buffers.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/pack
 ../config.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Mailbox.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/xdc.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Types.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/runtime/Types__prologue.h: 

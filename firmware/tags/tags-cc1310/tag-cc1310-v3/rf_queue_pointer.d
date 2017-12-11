@@ -1,12 +1,12 @@
 # FIXED
 
 rf_queue_pointer.obj: ../rf_queue_pointer.c
-rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h
-rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdlib.h
-rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h
+rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h
+rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h
+rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h
 rf_queue_pointer.obj: C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h
-rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h
-rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h
+rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h
+rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h
@@ -97,7 +97,7 @@ rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_0
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/package/BIOS_RtsGateProxy.h
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/rf_data_entry.h
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/rf_mailbox.h
-rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/string.h
+rf_queue_pointer.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h
 rf_queue_pointer.obj: ../buffers.h
 rf_queue_pointer.obj: ../config.h
 rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Mailbox.h
@@ -195,12 +195,12 @@ rf_queue_pointer.obj: C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_0
 rf_queue_pointer.obj: ../rf_queue_pointer.h
 
 ../rf_queue_pointer.c: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdint.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdlib.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/linkage.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/linkage.h: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stdarg.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdarg.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/std.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/arm/elf/M3.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/targets/std.h: 
@@ -291,7 +291,7 @@ C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbi
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/package/BIOS_RtsGateProxy.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/rf_data_entry.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272/driverlib/rf_mailbox.h: 
-C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include/string.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h: 
 ../buffers.h: 
 ../config.h: 
 C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ti/sysbios/knl/Mailbox.h: 

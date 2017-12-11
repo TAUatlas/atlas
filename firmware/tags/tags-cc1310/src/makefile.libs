@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     C:\Users\Nir Zaidman\workspace_v7\tags-cc1310\tags-cc1310.cfg
+#     C:\Users\Nir Zaidman\github\atlas\firmware\tags\tags-cc1310\tags-cc1310.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    C:\Users\Nir Zaidman\workspace_v7\tags-cc1310\src
+#    C:\Users\Nir Zaidman\github\atlas\firmware\tags\tags-cc1310\src
 #
 GEN_SRC_DIR ?= ../src
 

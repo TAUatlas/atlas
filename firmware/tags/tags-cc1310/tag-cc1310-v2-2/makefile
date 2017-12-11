@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := C:/Programs/TI2/ccsv6/tools/compiler/ti-cgt-arm_5.2.5
+CG_TOOL_ROOT := C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS
 
 GEN_OPTS__FLAG := --cmd_file="configPkg/compiler.opt"
 GEN_CMDS__FLAG := -l"configPkg/linker.cmd"
@@ -32,8 +32,8 @@ ORDERED_OBJS += \
 "./watchdog.obj" \
 "../cc13x0f128.cmd" \
 $(GEN_CMDS__FLAG) \
--l"libc.a" \
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/cc13xxware_2_04_02_17240/driverlib/bin/ccs/driverlib.lib" \
+-llibc.a \
+-l"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_02_17240/driverlib/bin/ccs/driverlib.lib" \
 
 -include ../makefile.init
 
@@ -47,89 +47,92 @@ RMDIR := RMDIR /S/Q
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(S_DEPS)),)
--include $(S_DEPS)
-endif
-ifneq ($(strip $(S_UPPER_DEPS)),)
--include $(S_UPPER_DEPS)
-endif
-ifneq ($(strip $(S62_DEPS)),)
--include $(S62_DEPS)
-endif
-ifneq ($(strip $(C64_DEPS)),)
--include $(C64_DEPS)
-endif
-ifneq ($(strip $(ASM_DEPS)),)
--include $(ASM_DEPS)
-endif
-ifneq ($(strip $(CC_DEPS)),)
--include $(CC_DEPS)
-endif
-ifneq ($(strip $(S55_DEPS)),)
--include $(S55_DEPS)
-endif
-ifneq ($(strip $(C67_DEPS)),)
--include $(C67_DEPS)
-endif
-ifneq ($(strip $(CLA_DEPS)),)
--include $(CLA_DEPS)
-endif
-ifneq ($(strip $(C??_DEPS)),)
--include $(C??_DEPS)
-endif
-ifneq ($(strip $(CPP_DEPS)),)
--include $(CPP_DEPS)
-endif
-ifneq ($(strip $(S??_DEPS)),)
--include $(S??_DEPS)
-endif
-ifneq ($(strip $(C_DEPS)),)
--include $(C_DEPS)
-endif
-ifneq ($(strip $(C62_DEPS)),)
--include $(C62_DEPS)
-endif
-ifneq ($(strip $(CXX_DEPS)),)
--include $(CXX_DEPS)
-endif
-ifneq ($(strip $(C++_DEPS)),)
--include $(C++_DEPS)
-endif
-ifneq ($(strip $(ASM_UPPER_DEPS)),)
--include $(ASM_UPPER_DEPS)
-endif
-ifneq ($(strip $(K_DEPS)),)
--include $(K_DEPS)
-endif
-ifneq ($(strip $(C43_DEPS)),)
--include $(C43_DEPS)
-endif
-ifneq ($(strip $(INO_DEPS)),)
--include $(INO_DEPS)
-endif
-ifneq ($(strip $(S67_DEPS)),)
--include $(S67_DEPS)
-endif
-ifneq ($(strip $(SA_DEPS)),)
--include $(SA_DEPS)
-endif
-ifneq ($(strip $(S43_DEPS)),)
--include $(S43_DEPS)
-endif
-ifneq ($(strip $(OPT_DEPS)),)
--include $(OPT_DEPS)
-endif
-ifneq ($(strip $(PDE_DEPS)),)
--include $(PDE_DEPS)
-endif
-ifneq ($(strip $(S64_DEPS)),)
--include $(S64_DEPS)
+ifneq ($(strip $(C55_DEPS)),)
+-include $(C55_DEPS)
 endif
 ifneq ($(strip $(C_UPPER_DEPS)),)
 -include $(C_UPPER_DEPS)
 endif
-ifneq ($(strip $(C55_DEPS)),)
--include $(C55_DEPS)
+ifneq ($(strip $(S67_DEPS)),)
+-include $(S67_DEPS)
+endif
+ifneq ($(strip $(S62_DEPS)),)
+-include $(S62_DEPS)
+endif
+ifneq ($(strip $(S_DEPS)),)
+-include $(S_DEPS)
+endif
+ifneq ($(strip $(OPT_DEPS)),)
+-include $(OPT_DEPS)
+endif
+ifneq ($(strip $(C??_DEPS)),)
+-include $(C??_DEPS)
+endif
+ifneq ($(strip $(ASM_UPPER_DEPS)),)
+-include $(ASM_UPPER_DEPS)
+endif
+ifneq ($(strip $(S??_DEPS)),)
+-include $(S??_DEPS)
+endif
+ifneq ($(strip $(C64_DEPS)),)
+-include $(C64_DEPS)
+endif
+ifneq ($(strip $(CXX_DEPS)),)
+-include $(CXX_DEPS)
+endif
+ifneq ($(strip $(S64_DEPS)),)
+-include $(S64_DEPS)
+endif
+ifneq ($(strip $(INO_DEPS)),)
+-include $(INO_DEPS)
+endif
+ifneq ($(strip $(CLA_DEPS)),)
+-include $(CLA_DEPS)
+endif
+ifneq ($(strip $(S55_DEPS)),)
+-include $(S55_DEPS)
+endif
+ifneq ($(strip $(SV7A_DEPS)),)
+-include $(SV7A_DEPS)
+endif
+ifneq ($(strip $(C62_DEPS)),)
+-include $(C62_DEPS)
+endif
+ifneq ($(strip $(C67_DEPS)),)
+-include $(C67_DEPS)
+endif
+ifneq ($(strip $(PDE_DEPS)),)
+-include $(PDE_DEPS)
+endif
+ifneq ($(strip $(K_DEPS)),)
+-include $(K_DEPS)
+endif
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
+ifneq ($(strip $(CC_DEPS)),)
+-include $(CC_DEPS)
+endif
+ifneq ($(strip $(C++_DEPS)),)
+-include $(C++_DEPS)
+endif
+ifneq ($(strip $(C43_DEPS)),)
+-include $(C43_DEPS)
+endif
+ifneq ($(strip $(S43_DEPS)),)
+-include $(S43_DEPS)
+endif
+ifneq ($(strip $(ASM_DEPS)),)
+-include $(ASM_DEPS)
+endif
+ifneq ($(strip $(S_UPPER_DEPS)),)
+-include $(S_UPPER_DEPS)
+endif
+ifneq ($(strip $(CPP_DEPS)),)
+-include $(CPP_DEPS)
+endif
+ifneq ($(strip $(SA_DEPS)),)
+-include $(SA_DEPS)
 endif
 endif
 
@@ -156,22 +159,22 @@ all: tag-cc1310-v2-2.out secondary-outputs
 tag-cc1310-v2-2.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"C:/Programs/TI2/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib --abi=eabi -me -O2 -g --define=DEBUG --define=CC1310_V2_2 --define=VH_TAG_FIRMWARE --define=ccs --display_error_number --diag_warning=225 --diag_warning=255 --diag_wrap=off --gen_func_subsections=on -z -m"tags-cc1310.map" --stack_size=1024 --heap_size=0 -i"C:/Programs/TI2/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/lib" -i"C:/Programs/TI2/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/include" --reread_libs --warn_sections --diag_wrap=off --display_error_number --xml_link_info="tags-cc1310_linkInfo.xml" --rom_model -o "tag-cc1310-v2-2.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib --abi=eabi -me -O2 -g --define=DEBUG --define=CC1310_V2_2 --define=VH_TAG_FIRMWARE --define=ccs --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on -z -m"tags-cc1310.map" --stack_size=1024 --heap_size=0 -i"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="tags-cc1310_linkInfo.xml" --rom_model -o "tag-cc1310-v2-2.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 tag-cc1310-v2-2.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/Programs/TI2/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armhex" --memwidth=8 --romwidth=8 --intel -o "tag-cc1310-v2-2.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/bin/armhex" --memwidth=8 --romwidth=8 --intel -o "tag-cc1310-v2-2.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(GEN_MISC_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(BIN_OUTPUTS__QUOTED)$(GEN_OPTS__QUOTED)$(GEN_CMDS__QUOTED)
+	-$(RM) $(GEN_CMDS__QUOTED)$(GEN_MISC_FILES__QUOTED)$(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)$(GEN_OPTS__QUOTED)
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
-	-$(RM) "CC1310_LAUNCHXL.pp" "basestation.pp" "buffers.pp" "ccfg.pp" "i2c_sensors.pp" "leds.pp" "main.pp" "radio_setup.pp" "random.pp" "receive.pp" "rf_queue_pointer.pp" "scif.pp" "scif_framework.pp" "scif_osal_tirtos.pp" "sensor_controller.pp" "sensors_batmon.pp" "tag.pp" "uart.pp" "vildehaye.pp" "watchdog.pp" 
 	-$(RM) "CC1310_LAUNCHXL.obj" "basestation.obj" "buffers.obj" "ccfg.obj" "i2c_sensors.obj" "leds.obj" "main.obj" "radio_setup.obj" "random.obj" "receive.obj" "rf_queue_pointer.obj" "scif.obj" "scif_framework.obj" "scif_osal_tirtos.obj" "sensor_controller.obj" "sensors_batmon.obj" "tag.obj" "uart.obj" "vildehaye.obj" "watchdog.obj" 
+	-$(RM) "CC1310_LAUNCHXL.d" "basestation.d" "buffers.d" "ccfg.d" "i2c_sensors.d" "leds.d" "main.d" "radio_setup.d" "random.d" "receive.d" "rf_queue_pointer.d" "scif.d" "scif_framework.d" "scif_osal_tirtos.d" "sensor_controller.d" "sensors_batmon.d" "tag.d" "uart.d" "vildehaye.d" "watchdog.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

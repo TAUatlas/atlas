@@ -16,11 +16,11 @@ BIOS_INC  = -I"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/pa
 
 TARGET_INC = -I"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/"
 
-INCS = $(BIOS_INC) $(TARGET_INC)  --include_path="C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include" --include_path="C:/Users/Nir Zaidman/workspace_v7/tags-cc1310" --include_path="C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272"  -IC:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ 
+INCS = $(BIOS_INC) $(TARGET_INC)  --include_path="C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include" --include_path="C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310" --include_path="C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_03_17272"  -IC:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/bios_6_46_01_37/packages/ 
 
-CC = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include
-ASM = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include
-AR = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/bin/armar rq
+CC = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include
+ASM = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include
+AR = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/bin/armar rq
 
 
 DEL = C:/ti/xdctools_3_32_00_06_core/packages/../bin/rm -f

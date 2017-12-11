@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS
+CG_TOOL_ROOT := C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS
 
 GEN_OPTS__FLAG := --cmd_file="configPkg/compiler.opt"
 GEN_CMDS__FLAG := -l"configPkg/linker.cmd"
@@ -159,13 +159,13 @@ all: tag-cc1310-v3.out secondary-outputs
 tag-cc1310-v3.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib -me -O2 --define=DEBUG --define=CC1310_V3 --define=VH_TAG_FIRMWARE --define=ccs -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"tags-cc1310.map" --heap_size=0 --stack_size=1024 -i"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="tags-cc1310_linkInfo.xml" --rom_model -o "tag-cc1310-v3.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/bin/armcl" -mv7M3 --code_state=16 -me -O2 --define=DEBUG --define=CC1310_V3 --define=VH_TAG_FIRMWARE --define=ccs -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"tags-cc1310.map" --heap_size=0 --stack_size=1024 -i"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="tags-cc1310_linkInfo.xml" --rom_model -o "tag-cc1310-v3.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 tag-cc1310-v3.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_17.9.0.STS/bin/armhex" --memwidth=8 --romwidth=8 --intel -o "tag-cc1310-v3.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/bin/armhex" --memwidth=8 --romwidth=8 --intel -o "tag-cc1310-v3.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 

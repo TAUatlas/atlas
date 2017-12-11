@@ -26,7 +26,6 @@
 #include "leds.h"
 #include "watchdog.h"
 #include "sensor_controller.h"
-
 #include <i2c_sensors.h>
 
 /*

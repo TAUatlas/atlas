@@ -9,7 +9,7 @@
  */
 
 
--l"C:\Users\Nir Zaidman\workspace_v7\tags-cc1310\tag-cc1310-v3\configPkg\package\cfg\tags-cc1310_pem3.oem3"
+-l"C:\Users\Nir Zaidman\github\atlas\firmware\tags\tags-cc1310\tag-cc1310-v3\configPkg\package\cfg\tags-cc1310_pem3.oem3"
 -l"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/mw/display/lib/display.aem3"
 -l"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/mw/lcd/lib/lcd.aem3"
 -l"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/mw/grlib/lib/grlib.aem3"
@@ -19,7 +19,7 @@
 -l"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/pdm/lib/pdm_cc13xxware.aem3"
 -l"C:\ti\tirtos_cc13xx_cc26xx_2_21_00_06\products\tidrivers_cc13xx_cc26xx_2_21_00_04\packages\ti\mw\fatfs\lib\release\ti.mw.fatfs.aem3"
 -l"C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/tidrivers_cc13xx_cc26xx_2_21_00_04/packages/ti/drivers/ports/lib/tirtosport.aem3"
--l"C:\Users\Nir Zaidman\workspace_v7\tags-cc1310\src\sysbios\rom_sysbios.aem3"
+-l"C:\Users\Nir Zaidman\github\atlas\firmware\tags\tags-cc1310\src\sysbios\rom_sysbios.aem3"
 -l"C:\ti\tirtos_cc13xx_cc26xx_2_21_00_06\products\bios_6_46_01_37\packages\ti\targets\arm\rtsarm\lib\boot.aem3"
 -l"C:\ti\tirtos_cc13xx_cc26xx_2_21_00_06\products\bios_6_46_01_37\packages\ti\targets\arm\rtsarm\lib\auto_init.aem3"
 

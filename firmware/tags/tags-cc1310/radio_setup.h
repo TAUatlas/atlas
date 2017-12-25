@@ -4,13 +4,14 @@
 #include <stdint.h>
 #include <limits.h>
 
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
-#include <driverlib/rf_prop_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_common_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_cmd.h>
 #include <ti/drivers/rf/RF.h>
-#include <rf_patches/rf_patch_cpe_genfsk.h>
-#include <rf_patches/rf_patch_rfe_genfsk.h>
-
+//#include <rf_patches/rf_patch_cpe_genfsk.h>
+//#include <rf_patches/rf_patch_rfe_genfsk.h>
+#include "rf_patch_cpe_genfsk.h"
+#include "rf_patch_rfe_genfsk.h"
 #include "config.h"
 
 #ifndef MAX_RADIO_SETUPS

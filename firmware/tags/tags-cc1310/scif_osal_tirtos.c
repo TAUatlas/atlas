@@ -3,14 +3,10 @@
 #ifdef SCIF_INCLUDE_OSAL_C_FILE
 
 
-#undef DEVICE_FAMILY_PATH
-#ifdef DEVICE_FAMILY
-    #define DEVICE_FAMILY_PATH(x) <ti/devices/DEVICE_FAMILY/x>
-#else
-    #define DEVICE_FAMILY_PATH(x) <x>
-#endif
-#include DEVICE_FAMILY_PATH(inc/hw_nvic.h)
-#include DEVICE_FAMILY_PATH(driverlib/cpu.h)
+#include <ti/devices/DeviceFamily.h>
+
+#include DeviceFamily_constructPath(inc/hw_nvic.h)
+#include DeviceFamily_constructPath(driverlib/cpu.h)
 #include "scif_osal_tirtos.h"
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Clock.h>

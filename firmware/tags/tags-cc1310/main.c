@@ -63,7 +63,9 @@ int main(void) {
 	uartTasks_init(Board_UART);
 	Board_initSPI();
 	i2cSensorsInit();
-
+	leds_init();
+	leds_on(LEDS_RX);
+	leds_on(LEDS_TX);
 	testTask_init();
 #else
 

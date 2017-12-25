@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include <driverlib/aon_batmon.h>
+#include <ti/devices/cc13x0/driverlib/aon_batmon.h>
 
 static uint8_t batmonEnabled = 0;
 

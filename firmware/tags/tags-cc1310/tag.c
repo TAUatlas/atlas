@@ -11,15 +11,16 @@
 
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
+#include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_prop_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
-#include <driverlib/rf_prop_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_common_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_cmd.h>
 #include <ti/drivers/rf/RF.h>
 
-#include <driverlib/sys_ctrl.h>
+#include <ti/devices/cc13x0/driverlib/sys_ctrl.h>
 
 
 #include "config.h"
@@ -43,10 +44,10 @@ static uint8_t* flashConfigurationData = (uint8_t*) 0x0001e000;
 // this should be adjusted when we find out how much space there is past the configuration packet
 static uint32_t flashConfigurationEnd  = 0x0001e000 + (flashPageSize-1);
 
-#include <driverlib/rom.h>
-#include <driverlib/vims.h>
+#include <ti/devices/cc13x0/driverlib/rom.h>
+#include <ti/devices/cc13x0/driverlib/vims.h>
 //extern uint32_t ROM_FlashProgram(uint8_t* buffer, uint32_t address, uint32_t count);
-//#include <driverlib/flash.h>
+//#include <ti/devices/cc13x0/driverlib/flash.h>
 
 void flashSetConfigurationLimit(uint16_t length) {
 	flashConfigurationEnd = 0x0001e000 + length;

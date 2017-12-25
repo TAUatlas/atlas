@@ -40,9 +40,14 @@
 /*
  *  ====================== Includes ============================================
  */
-#include <xdc/std.h>
-#include <xdc/runtime/System.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
+#include <ti/devices/cc13x0/driverlib/ioc.h>
+#include <ti/devices/cc13x0/driverlib/udma.h>
+#include <ti/devices/cc13x0/inc/hw_ints.h>
+#include <ti/devices/cc13x0/inc/hw_memmap.h>
 #include <ti/sysbios/family/arm/m3/Hwi.h>
 #include <ti/drivers/PIN.h>
 #include <ti/drivers/pin/PINCC26XX.h>
@@ -51,11 +56,6 @@
 #include <ti/drivers/timer/GPTimerCC26XX.h>
 #include <ti/drivers/Power.h>
 #include <ti/drivers/power/PowerCC26XX.h>
-
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <driverlib/ioc.h>
-#include <driverlib/udma.h>
 
 #include <Board.h>
 
@@ -112,9 +112,9 @@ const PowerCC26XX_Config PowerCC26XX_config = {
     .policyInitFxn      = NULL,
     .policyFxn          = &PowerCC26XX_standbyPolicy,
     .calibrateFxn       = &PowerCC26XX_calibrate,
-    .enablePolicy       = TRUE,
-    .calibrateRCOSC_LF  = TRUE,
-    .calibrateRCOSC_HF  = TRUE,
+    .enablePolicy       = true,
+    .calibrateRCOSC_LF  = true,
+    .calibrateRCOSC_HF  = true,
 };
 /*
  *  ============================= Power end ====================================
@@ -135,6 +135,7 @@ const PowerCC26XX_Config PowerCC26XX_config = {
 
 /* UART objects */
 UARTCC26XX_Object uartCC26XXObjects[CC1310_LAUNCHXL_UARTCOUNT];
+uint8_t uartCC26XXRingBuffer[CC1310_LAUNCHXL_UARTCOUNT][32];
 
 /* UART hardware parameter structure, also used to assign UART pins */
 const UARTCC26XX_HWAttrsV2 uartCC26XXHWAttrs[CC1310_LAUNCHXL_UARTCOUNT] = {
@@ -147,7 +148,9 @@ const UARTCC26XX_HWAttrsV2 uartCC26XXHWAttrs[CC1310_LAUNCHXL_UARTCOUNT] = {
         .txPin          = Board_UART_TX,
         .rxPin          = Board_UART_RX,
         .ctsPin         = PIN_UNASSIGNED,
-        .rtsPin         = PIN_UNASSIGNED
+        .rtsPin         = PIN_UNASSIGNED,
+        .ringBufPtr     = uartCC26XXRingBuffer[CC1310_LAUNCHXL_UART0],
+        .ringBufSize    = sizeof(uartCC26XXRingBuffer[CC1310_LAUNCHXL_UART0])
     }
 };
 
@@ -160,6 +163,9 @@ const UART_Config UART_config[] = {
     },
     {NULL, NULL, NULL}
 };
+
+const uint_least8_t UART_count = CC1310_LAUNCHXL_UARTCOUNT;
+
 /*
  *  ============================= UART end =====================================
  */
@@ -262,6 +268,9 @@ const SPI_Config SPI_config[] = {
     },
     {NULL, NULL, NULL}
 };
+
+const uint_least8_t SPI_count = CC1310_LAUNCHXL_SPICOUNT;
+
 /*
  *  ========================== SPI DMA end =====================================
 */
@@ -304,6 +313,9 @@ const I2C_Config I2C_config[] = {
     },
     {NULL, NULL, NULL}
 };
+
+const uint_least8_t I2C_count = CC1310_LAUNCHXL_I2CCOUNT;
+
 /*
  *  ========================== I2C end =========================================
  */
@@ -380,9 +392,9 @@ const RFCC26XX_HWAttrs RFCC26XX_hwAttrs = {
 #pragma DATA_SECTION(displayUartHWAttrs, ".const:displayUartHWAttrs")
 #endif
 
-#include <ti/mw/display/Display.h>
-#include <ti/mw/display/DisplaySharp.h>
-#include <ti/mw/display/DisplayUart.h>
+#include <ti/display/Display.h>
+#include <ti/display/DisplaySharp.h>
+#include <ti/display/DisplayUart.h>
 
 /* Structures for UartPlain Blocking */
 DisplayUart_Object        displayUartObject;
@@ -395,7 +407,7 @@ static char uartStringBuf[BOARD_DISPLAY_UART_STRBUF_SIZE];
 const DisplayUart_HWAttrs displayUartHWAttrs = {
     .uartIdx      = Board_UART,
     .baudRate     =     115200,
-    .mutexTimeout = BIOS_WAIT_FOREVER,
+    .mutexTimeout = (unsigned int)(-1),
     .strBuf = uartStringBuf,
     .strBufLen = BOARD_DISPLAY_UART_STRBUF_SIZE,
 };
@@ -713,3 +725,28 @@ const ADC_Config ADC_config[] = {
 /*
  *  ========================== ADC end =========================================
  */
+
+/*
+ *  =============================== Watchdog ===============================
+ */
+#include <ti/drivers/Watchdog.h>
+#include <ti/drivers/watchdog/WatchdogCC26XX.h>
+
+WatchdogCC26XX_Object watchdogCC26XXObjects[CC1310_LAUNCHXL_WATCHDOGCOUNT];
+
+const WatchdogCC26XX_HWAttrs watchdogCC26XXHWAttrs[CC1310_LAUNCHXL_WATCHDOGCOUNT] = {
+    {
+        .baseAddr    = WDT_BASE,
+        .reloadValue = 1000 /* Reload value in milliseconds */
+    },
+};
+
+const Watchdog_Config Watchdog_config[CC1310_LAUNCHXL_WATCHDOGCOUNT] = {
+    {
+        .fxnTablePtr = &WatchdogCC26XX_fxnTable,
+        .object      = &watchdogCC26XXObjects[CC1310_LAUNCHXL_WATCHDOG0],
+        .hwAttrs     = &watchdogCC26XXHWAttrs[CC1310_LAUNCHXL_WATCHDOG0]
+    },
+};
+
+const uint_least8_t Watchdog_count = CC1310_LAUNCHXL_WATCHDOGCOUNT;

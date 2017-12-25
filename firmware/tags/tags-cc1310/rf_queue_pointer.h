@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <driverlib/rf_data_entry.h>
+#include <ti/devices/cc13x0/driverlib/rf_data_entry.h>
 
 #define RF_QUEUE_POINTER_ELEMENT_SIZE  (sizeof(rfc_dataEntryPointer_t)+sizeof(uint32_t))
 

@@ -19,7 +19,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
-#include <driverlib/sys_ctrl.h>
+#include <ti/devices/cc13x0/driverlib/sys_ctrl.h>
 
 #include "config.h"
 #include "leds.h"
@@ -40,7 +40,6 @@ static void watchdog_taskFunction(UArg arg0, UArg arg1) {
 		System_printf("RESET SOURCE system/warm reset\n");
 		leds_blink(LEDS_TX,2);
 		break;
-	case RSTSRC_VDD_LOSS:
 	case RSTSRC_VDDS_LOSS:
 	case RSTSRC_VDDR_LOSS:
 		System_printf("RESET SOURCE VDD(R/S) loss\n");

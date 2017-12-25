@@ -94,7 +94,7 @@ SECTIONS
     .cinit          :   > FLASH
     .pinit          :   > FLASH
     .init_array     :   > FLASH
-    .emb_text       :   > FLASH
+    .emb_text       :   >> FLASH
     .ccfg           :   > FLASH (HIGH)
 
     .vtable         :   > SRAM
@@ -112,6 +112,14 @@ SECTIONS
 /*  Hide section from older compilers not supporting the "ramfunc" attribute.
     See http://processors.wiki.ti.com/index.php/Placing_functions_in_RAM */
     .TI.ramfunc : {} load=FLASH, run=SRAM, table(BINIT)
+    .nonretenvar    :   > SRAM
+
+	    /* Heap buffer used by HeapMem */
+    .priheap   : {
+	        __primary_heap_start__ = .;
+	        . += HEAPSIZE;
+	        __primary_heap_end__ = .;
+	    } > SRAM align 8
 #endif
 #endif
 }

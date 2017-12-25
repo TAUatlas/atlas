@@ -2,17 +2,20 @@
 
 #include <xdc/runtime/System.h>
 
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
-#include <driverlib/rf_prop_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_common_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_cmd.h>
 #include <ti/drivers/rf/RF.h>
 #ifdef CC1310
-#include <rf_patches/rf_patch_cpe_genfsk.h>
-#include <rf_patches/rf_patch_rfe_genfsk.h>
-#include <rf_patches/rf_patch_cpe_lrm.h>
+//#include <rf_patches/rf_patch_cpe_genfsk.h>
+//#include <rf_patches/rf_patch_rfe_genfsk.h>
+//#include <rf_patches/rf_patch_cpe_lrm.h>
 //#include <rf_patches/apply_lrm_mce_patch.h>
 // got the file below from SVS on E2E
 #include "apply_lrm_mce_patch.h"
+#include "rf_patch_cpe_genfsk.h"
+#include "rf_patch_rfe_genfsk.h"
+#include "rf_patch_cpe_lrm.h"
 #endif
 
 #ifdef CC2650

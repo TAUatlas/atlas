@@ -49,7 +49,7 @@ extern "C" {
  *  Includes
  *  ==========================================================================*/
 #include <ti/drivers/PIN.h>
-#include <driverlib/ioc.h>
+#include <ti/devices/cc13x0/driverlib/ioc.h>
 
 #include "config.h"
 
@@ -468,6 +468,16 @@ typedef enum CC1310_LAUNCHXL_ADCName {
     CC1310_LAUNCHXL_ADCVDDS,
     CC1310_LAUNCHXL_ADCCOUNT
 } CC1310_LAUNCHXL_ADCName;
+
+/*!
+ *  @def    CC1310_LAUNCHXL_WatchdogName
+ *  @brief  Enum of Watchdogs
+ */
+typedef enum CC1310_LAUNCHXL_WatchdogName {
+    CC1310_LAUNCHXL_WATCHDOG0 = 0,
+
+    CC1310_LAUNCHXL_WATCHDOGCOUNT
+} CC1310_LAUNCHXL_WatchdogName;
 
 #ifdef __cplusplus
 }

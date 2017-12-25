@@ -1,25 +1,21 @@
 /// \addtogroup module_scif_generic_interface
 //@{
 #include "scif_framework.h"
-#undef DEVICE_FAMILY_PATH
-#ifdef DEVICE_FAMILY
-    #define DEVICE_FAMILY_PATH(x) <ti/devices/DEVICE_FAMILY/x>
-#else
-    #define DEVICE_FAMILY_PATH(x) <x>
-#endif
-#include DEVICE_FAMILY_PATH(inc/hw_types.h)
-#include DEVICE_FAMILY_PATH(inc/hw_memmap.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aon_event.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aon_rtc.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aon_wuc.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aux_sce.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aux_smph.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aux_evctl.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aux_aiodio.h)
-#include DEVICE_FAMILY_PATH(inc/hw_aux_wuc.h)
-#include DEVICE_FAMILY_PATH(inc/hw_event.h)
-#include DEVICE_FAMILY_PATH(inc/hw_ints.h)
-#include DEVICE_FAMILY_PATH(inc/hw_ioc.h)
+#include <ti/devices/DeviceFamily.h>
+
+#include DeviceFamily_constructPath(inc/hw_types.h)
+#include DeviceFamily_constructPath(inc/hw_memmap.h)
+#include DeviceFamily_constructPath(inc/hw_aon_event.h)
+#include DeviceFamily_constructPath(inc/hw_aon_rtc.h)
+#include DeviceFamily_constructPath(inc/hw_aon_wuc.h)
+#include DeviceFamily_constructPath(inc/hw_aux_sce.h)
+#include DeviceFamily_constructPath(inc/hw_aux_smph.h)
+#include DeviceFamily_constructPath(inc/hw_aux_evctl.h)
+#include DeviceFamily_constructPath(inc/hw_aux_aiodio.h)
+#include DeviceFamily_constructPath(inc/hw_aux_wuc.h)
+#include DeviceFamily_constructPath(inc/hw_event.h)
+#include DeviceFamily_constructPath(inc/hw_ints.h)
+#include DeviceFamily_constructPath(inc/hw_ioc.h)
 #include <string.h>
 #if defined(__IAR_SYSTEMS_ICC__)
     #include <intrinsics.h>

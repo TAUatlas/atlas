@@ -16,9 +16,9 @@
 
 #include <ti/sysbios/family/arm/cc26xx/Seconds.h>
 
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
-#include <driverlib/rf_prop_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_common_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_cmd.h>
 #include <ti/drivers/rf/RF.h>
 
 #include "config.h"

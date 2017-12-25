@@ -11,13 +11,13 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_prop_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
-#include <driverlib/rf_prop_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_mailbox.h>
+#include <ti/devices/cc13x0/driverlib/rf_common_cmd.h>
+#include <ti/devices/cc13x0/driverlib/rf_prop_cmd.h>
 #include <ti/drivers/rf/RF.h>
 
-#include <driverlib/sys_ctrl.h>
+#include <ti/devices/cc13x0/driverlib/sys_ctrl.h>
 
 #include "config.h"
 #include "leds.h"

@@ -27,11 +27,11 @@
 // It should only be included from ONE source file to avoid duplicated constant arrays
 
 
-#ifndef _APPLY_LRM_MCE_PATCH_H
+#ifndef _APPLY_LRM_MCE_PATCH_Hs
 #define _APPLY_LRM_MCE_PATCH_H
 
 #include <stdint.h>
-#include <inc/hw_types.h>
+#include <ti/devices/cc13x0/inc/hw_types.h>
 
 #ifndef MCE_PATCH_TYPE
 #define MCE_PATCH_TYPE static const uint32_t

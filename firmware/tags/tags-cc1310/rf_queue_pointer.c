@@ -47,7 +47,7 @@
 #include <ti/sysbios/BIOS.h>
 
 
-#include <driverlib/rf_data_entry.h>
+#include <ti/devices/cc13x0/driverlib/rf_data_entry.h>
 
 #include "buffers.h"
 #include "rf_queue_pointer.h"

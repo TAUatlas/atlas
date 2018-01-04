@@ -23,7 +23,7 @@
   its documentation for any purpose.
 
   YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
-  PROVIDED �AS IS� WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+  PROVIDED ן¿½AS ISן¿½ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
   INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, TITLE,
   NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL
   TEXAS INSTRUMENTS OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT,
@@ -82,7 +82,7 @@ static UART_Handle hUart = NULL;
  */
 void UartPrintf_init(UART_Handle handle)
 {
-	hUart = handle;
+    hUart = handle;
 }
 
 /*********************************************************************
@@ -112,31 +112,31 @@ void UartPrintf_init(UART_Handle handle)
   */
 void uartPrintf_flush()
 {
-	// Abort in case UART hasn't been initialized.
-	if (NULL == hUart)
-		return;
+    // Abort in case UART hasn't been initialized.
+    if (NULL == hUart)
+        return;
 
   // Lock head position to avoid race conditions
   uint16_t curHead = uartPrintf_head;
 
   // Find out how much data must be output, and how to output it.
-	bool needWrap = curHead < uartPrintf_tail;
+    bool needWrap = curHead < uartPrintf_tail;
   uint16_t outLen = needWrap?(UART_PRINTF_BUF_LEN-uartPrintf_tail+curHead):(curHead-uartPrintf_tail);
 
-	if (outLen)
-	{
-		if (needWrap)
-		{
-			UART_write(hUart, &uartPrintf_outArray[uartPrintf_tail], UART_PRINTF_BUF_LEN - uartPrintf_tail);
-			UART_write(hUart, uartPrintf_outArray, curHead);
-		}
-		else
-		{
-			UART_write(hUart, &uartPrintf_outArray[uartPrintf_tail], outLen);
-		}
-	}
+    if (outLen)
+    {
+        if (needWrap)
+        {
+            UART_write(hUart, &uartPrintf_outArray[uartPrintf_tail], UART_PRINTF_BUF_LEN - uartPrintf_tail);
+            UART_write(hUart, uartPrintf_outArray, curHead);
+        }
+        else
+        {
+            UART_write(hUart, &uartPrintf_outArray[uartPrintf_tail], outLen);
+        }
+    }
 
-	uartPrintf_tail = curHead;
+    uartPrintf_tail = curHead;
 }
 
 /*********************************************************************
@@ -165,16 +165,16 @@ void uartPrintf_flush()
 void uartPrintf_putch(char ch)
 {
     // uartPrintf_tail should never catch up with uartPrintf_head. Discard in-between bytes.
-	if ( (uartPrintf_head + 1) % UART_PRINTF_BUF_LEN == uartPrintf_tail )
-		return;
+    if ( (uartPrintf_head + 1) % UART_PRINTF_BUF_LEN == uartPrintf_tail )
+        return;
 
-	uartPrintf_outArray[uartPrintf_head] = ch;
-	uartPrintf_head++;
+    uartPrintf_outArray[uartPrintf_head] = ch;
+    uartPrintf_head++;
 
-	if (uartPrintf_head >= UART_PRINTF_BUF_LEN)
-		uartPrintf_head = 0;
+    if (uartPrintf_head >= UART_PRINTF_BUF_LEN)
+        uartPrintf_head = 0;
 
-	if (ch=='\n') uartPrintf_flush();
+    if (ch=='\n') uartPrintf_flush();
 }
 
 

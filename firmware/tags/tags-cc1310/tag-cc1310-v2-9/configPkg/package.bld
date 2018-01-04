@@ -11,7 +11,7 @@ var makeAssembly = false;
 var Executable = xdc.module('xdc.bld.Executable');
 
 var exeOpts = new Executable.Attrs({
-        cfgScript: 'C:/files/atlas/tags-cc1310/tags-cc1310.cfg',
+        cfgScript: 'C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310/tags-cc1310.cfg',
         profile: 'release',
         cfgHome: 'configPkg',
 });
@@ -41,7 +41,7 @@ else {
 
 var thisObj = {
     cfg:        '../tags-cc1310.cfg',
-    outputPath: 'C:/files/atlas/tags-cc1310/tag-cc1310-v2-9/configPkg',
+    outputPath: 'C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310/tag-cc1310-v2-9/configPkg',
     exeName:    'tags-cc1310' + suffix,
     exeIntName: 'tags-cc1310' + suffix.replace('.', '_'),
     targ:       targ,

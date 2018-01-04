@@ -3,7 +3,7 @@
 #  package.bld.  Any modifications to this file will be 
 #  overwritten whenever makefiles are re-generated.
 #
-#  target compatibility key = ti.targets.arm.elf.M3{1,0,5.2,5
+#  target compatibility key = ti.targets.arm.elf.M3{1,0,15.12,7
 #
 tags-cc1310.xem3: package/cfg/tags-cc1310.xem3.mak
 

@@ -9,19 +9,10 @@
  */
 
 
--l"C:\files\atlas\tags-cc1310\tag-cc1310-launchpad\configPkg\package\cfg\tags-cc1310_pem3.oem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/mw/display/lib/display.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/mw/lcd/lib/lcd.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/mw/grlib/lib/grlib.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/drivers/rf/lib/rf_singleMode_cc13xxware.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/drivers/lib/drivers_cc13xxware.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/drivers/lib/power_cc13xx_tirtos.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/drivers/pdm/lib/pdm_cc13xxware.aem3"
--l"C:\Programs\TI2\tirtos_cc13xx_cc26xx_2_20_00_06\products\tidrivers_cc13xx_cc26xx_2_20_00_08\packages\ti\mw\fatfs\lib\release\ti.mw.fatfs.aem3"
--l"C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/tidrivers_cc13xx_cc26xx_2_20_00_08/packages/ti/drivers/ports/lib/tirtosport.aem3"
--l"C:\files\atlas\tags-cc1310\src\sysbios\rom_sysbios.aem3"
--l"C:\Programs\TI2\tirtos_cc13xx_cc26xx_2_20_00_06\products\bios_6_46_00_23\packages\ti\targets\arm\rtsarm\lib\boot.aem3"
--l"C:\Programs\TI2\tirtos_cc13xx_cc26xx_2_20_00_06\products\bios_6_46_00_23\packages\ti\targets\arm\rtsarm\lib\auto_init.aem3"
+-l"C:\Users\Nir Zaidman\github\atlas\firmware\tags\tags-cc1310\tag-cc1310-launchpad\configPkg\package\cfg\tags-cc1310_pem3.oem3"
+-l"C:\Users\Nir Zaidman\github\atlas\firmware\tags\tags-cc1310\src\sysbios\rom_sysbios.aem3"
+-l"C:\ti\simplelink_cc13x0_sdk_1_50_00_08\kernel\tirtos\packages\ti\targets\arm\rtsarm\lib\boot.aem3"
+-l"C:\ti\simplelink_cc13x0_sdk_1_50_00_08\kernel\tirtos\packages\ti\targets\arm\rtsarm\lib\auto_init.aem3"
 
 --retain="*(xdc.meta)"
 
@@ -82,6 +73,8 @@
 
 /* Content from xdc.runtime.knl (null): */
 
+/* Content from xdc.services.io (null): */
+
 /* Content from ti.catalog.arm.cortexm3 (null): */
 
 /* Content from ti.catalog.peripherals.hdvicp2 (null): */
@@ -111,17 +104,13 @@ ti_sysbios_family_arm_m3_Hwi_nvic = 0xe000e000;
 
 /* Content from ti.sysbios (null): */
 
-/* Content from ti.drivers.ports (null): */
-
-/* Content from ti.mw.fatfs (null): */
-
 /* Content from ti.sysbios.gates (null): */
 
 /* Content from ti.sysbios.xdcruntime (null): */
 
 /* Content from ti.sysbios.heaps (null): */
 
-/* Content from ti.sysbios.rom.cortexm.cc13xx (C:/Programs/TI2/tirtos_cc13xx_cc26xx_2_20_00_06/products/bios_6_46_00_23/packages/ti/sysbios/rom/cortexm/cc13xx/golden/CC13xx/CC13xx_link_ti.xdt): */
+/* Content from ti.sysbios.rom.cortexm.cc13xx (C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/rom/cortexm/cc13xx/golden/CC13xx/CC13xx_link_ti.xdt): */
 
 -u xdc_runtime_Error_policy__C
 -u xdc_runtime_IModule_Interface__BASE__C
@@ -402,7 +391,7 @@ ti_sysbios_hal_Hwi_Instance_init__E = 0x1001b9f5;
 ti_sysbios_gates_GateHwi_query__E = 0x1001c265;
 xdc_runtime_System_processAtExit__E = 0x1001c6b5;
 ti_sysbios_family_arm_cc26xx_Timer_setPeriod__E = 0x1001c255;
-xdc_runtime_Error_init__E = 0x1001c83d;
+// xdc_runtime_Error_init__E = 0x1001c83d;
 ti_sysbios_knl_Semaphore_Instance_init__E = 0x1001bafd;
 ti_sysbios_knl_Queue_head__E = 0x1001c2d1;
 xdc_runtime_Error_check__E = 0x1001c7b5;
@@ -688,25 +677,9 @@ SECTIONS
     .data:ti_sysbios_family_arm_cc26xx_Timer_Module__state__V: LOAD > 0x200001e4
 }
 
-/* Content from ti.drivers.pdm (null): */
-
 /* Content from ti.sysbios.utils (null): */
 
-/* Content from ti.drivers (null): */
-
-/* Content from ti.drivers.rf (null): */
-
-/* Content from ti.mw.grlib (null): */
-
-/* Content from ti.mw.lcd (null): */
-
-/* Content from ti.mw.display (null): */
-
-/* Content from ti.mw (null): */
-
 /* Content from configPkg (null): */
-
-/* Content from xdc.services.io (null): */
 
 
 
@@ -720,8 +693,8 @@ xdc_runtime_Startup__RESETFXN__C = 1;
 SECTIONS
 {
     .bootVecs:  type = DSECT
-    .vecs: load > 0x20000000
     .resetVecs: load > 0x0
+    .vecs: load > 0x20000000, type = NOLOAD
 
 
 

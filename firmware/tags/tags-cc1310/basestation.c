@@ -12,6 +12,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Mailbox.h>
+#include <ti/sysbios/knl/Clock.h>
 
 #include <ti/sysbios/family/arm/cc26xx/Seconds.h>
 

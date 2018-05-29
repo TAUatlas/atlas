@@ -19,6 +19,20 @@ basestation.obj: ../basestation.c $(GEN_OPTS) | $(GEN_HDRS)
 	@echo 'Finished building: $<'
 	@echo ' '
 
+bmi160.obj: ../bmi160.c $(GEN_OPTS) | $(GEN_HDRS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: ARM Compiler'
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib --abi=eabi -me -O2 --include_path="C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/include" --include_path="C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310" --include_path="C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_02_17240" -g --define=DEBUG --define=DeviceFamily_CC13X0 --define=CC1310_LAUNCHPAD --define=VH_TAG_FIRMWARE --define=ccs --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --preproc_with_compile --preproc_dependency="bmi160.d_raw" $(GEN_OPTS__FLAG) "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+bmi160_support.obj: ../bmi160_support.c $(GEN_OPTS) | $(GEN_HDRS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: ARM Compiler'
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib --abi=eabi -me -O2 --include_path="C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/include" --include_path="C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310" --include_path="C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_02_17240" -g --define=DEBUG --define=DeviceFamily_CC13X0 --define=CC1310_LAUNCHPAD --define=VH_TAG_FIRMWARE --define=ccs --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --preproc_with_compile --preproc_dependency="bmi160_support.d_raw" $(GEN_OPTS__FLAG) "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
 buffers.obj: ../buffers.c $(GEN_OPTS) | $(GEN_HDRS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: ARM Compiler'
@@ -114,6 +128,13 @@ sensors_batmon.obj: ../sensors_batmon.c $(GEN_OPTS) | $(GEN_HDRS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: ARM Compiler'
 	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib --abi=eabi -me -O2 --include_path="C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/include" --include_path="C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310" --include_path="C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_02_17240" -g --define=DEBUG --define=DeviceFamily_CC13X0 --define=CC1310_LAUNCHPAD --define=VH_TAG_FIRMWARE --define=ccs --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --preproc_with_compile --preproc_dependency="sensors_batmon.d_raw" $(GEN_OPTS__FLAG) "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+spi_flash.obj: ../spi_flash.c $(GEN_OPTS) | $(GEN_HDRS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: ARM Compiler'
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=vfplib --abi=eabi -me -O2 --include_path="C:/ti/ccsv7/tools/compiler/ti-cgt-arm_15.12.7.LTS/include" --include_path="C:/Users/Nir Zaidman/github/atlas/firmware/tags/tags-cc1310" --include_path="C:/ti/tirtos_cc13xx_cc26xx_2_21_00_06/products/cc13xxware_2_04_02_17240" -g --define=DEBUG --define=DeviceFamily_CC13X0 --define=CC1310_LAUNCHPAD --define=VH_TAG_FIRMWARE --define=ccs --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --preproc_with_compile --preproc_dependency="spi_flash.d_raw" $(GEN_OPTS__FLAG) "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

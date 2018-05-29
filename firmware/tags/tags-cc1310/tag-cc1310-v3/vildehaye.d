@@ -114,6 +114,7 @@ vildehaye.obj: ../rf_patch_rfe_genfsk.h
 vildehaye.obj: C:/ti/simplelink_cc13x0_sdk_1_50_00_08/source/ti/devices/cc13x0/inc/hw_types.h
 vildehaye.obj: C:/ti/simplelink_cc13x0_sdk_1_50_00_08/source/ti/devices/cc13x0/inc/../inc/hw_chip_def.h
 vildehaye.obj: ../config.h
+vildehaye.obj: ../i2c_sensors.h
 
 ../vildehaye.c: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
@@ -229,3 +230,4 @@ C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h:
 C:/ti/simplelink_cc13x0_sdk_1_50_00_08/source/ti/devices/cc13x0/inc/hw_types.h: 
 C:/ti/simplelink_cc13x0_sdk_1_50_00_08/source/ti/devices/cc13x0/inc/../inc/hw_chip_def.h: 
 ../config.h: 
+../i2c_sensors.h: 

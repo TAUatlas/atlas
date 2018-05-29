@@ -33,6 +33,9 @@
 #define VH_TEST_UINTARRAY        63003
 #define VH_TEST_UNSIGNED         64004
 #define VH_GOTO_SETUP            65001
+#define BMI160_G_RANGE           133
+#define BMI160_ACCEL_PERIOD      134
+
 
 #define VH_TAGSTATE_ATLAS_CODE_INDEX_MASK     0x0F
 #define VH_TAGSTATE_ATLAS_INVERTED      0x80

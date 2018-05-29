@@ -39,4 +39,4 @@ encoding//tag-cc1310-v3/objects.mk=UTF-8
 encoding//tag-cc1310-v3/sources.mk=UTF-8
 encoding//tag-cc1310-v3/subdir_rules.mk=UTF-8
 encoding//tag-cc1310-v3/subdir_vars.mk=UTF-8
-encoding/uart_printf.h=UTF-8
+encoding/i2c_sensors.h=UTF-8

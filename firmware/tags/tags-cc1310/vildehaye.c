@@ -14,6 +14,7 @@
 #include "leds.h"
 #include "watchdog.h"
 #include "radio_setup.h"
+#include "i2c_sensors.h"
 
 /*
 typedef struct videhaye_packet_st {
@@ -371,6 +372,14 @@ uint16_t vildehayeHandlePacketNaked(const uint8_t* buffer, uint16_t payloadLengt
     	radioSetup_configureFromBuffer(buffer+p, len);
 //#endif
     	break;
+    case BMI160_G_RANGE:
+            System_printf("BMI160 G RANGE length %d\n",len);
+            bmi160Setup_GRange(buffer+p);
+            break;
+    case BMI160_ACCEL_PERIOD:
+            System_printf("BMI160 ACCEL PERIOD length %d\n",len);
+            bmi160Setup_TicksFactor(buffer+p);
+            break;
     default:
     	System_printf("VDH code %d (no handler) length %d\n",typeCodeFull,len);
     	break;

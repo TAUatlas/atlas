@@ -10,7 +10,6 @@
 #include <ti/drivers/UART.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
-
 extern Mailbox_Handle uartTxMailbox;
 extern Mailbox_Handle uartRxMailbox;
 

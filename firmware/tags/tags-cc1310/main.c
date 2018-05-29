@@ -26,8 +26,8 @@
 #include "leds.h"
 #include "watchdog.h"
 #include "sensor_controller.h"
-#include <i2c_sensors.h>
 
+#include <i2c_sensors.h>
 /*
  *  ======== main ========
  */
@@ -47,23 +47,27 @@ int main(void) {
 
 	Board_initUART();
 
-	leds_init();
+	//leds_init();
 
 	System_printf("***BUILD TIME DATE "__TIME__" "__DATE__" ***\n");
 
 	buffers_init();
-//	receive_init();
+	receive_init();
 
 	System_printf("going to radio setup\n");
-
-//	radioSetup_init();
+	/*uartTasks_init(Board_UART);
+	    SPI_init();
+	    i2cSensorsInit();
+	    testTask_init();*/
+	radioSetup_init();
 
 //#if defined(CC1310_V3) || ( defined(CC1310_LAUNCHPAD) && defined(TAG_FIRMWARE) )
 #if defined(CC1310_V3)
 	uartTasks_init(Board_UART);
 	SPI_init();
+    spiFlash_init();
+
 	i2cSensorsInit();
-	testTask_init();
 #else
 
 #ifdef TAG_FIRMWARE

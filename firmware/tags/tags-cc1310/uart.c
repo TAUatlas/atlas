@@ -213,8 +213,7 @@ static void uartRxTaskFunction(UArg arg0, UArg arg1) {
 
 	do {
 		uart_read(uartHandle, &rxbyte, 1);
-	} while (rxbyte != SLIP_END);
-
+	}while (rxbyte != SLIP_END);
 	while (1) {
 		buffer_descriptor d;
 		Mailbox_pend(freeMailbox, &d, BIOS_WAIT_FOREVER);

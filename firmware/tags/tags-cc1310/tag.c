@@ -229,7 +229,6 @@ void tag_gotoConfiguration(uint8_t c) {
 	slotInFrameIndex=65535; // this causes a new frame to start
 }
 
-
 uint8_t wakeupTriggers[4][4];
 uint8_t wakeupTriggersCount = 0;
 void tag_triggerWakeupSetup(const uint8_t* wtarray) {

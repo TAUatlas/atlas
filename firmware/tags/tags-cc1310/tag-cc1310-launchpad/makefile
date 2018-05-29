@@ -12,6 +12,8 @@ GEN_CMDS__FLAG := -l"configPkg/linker.cmd"
 ORDERED_OBJS += \
 "./CC1310_LAUNCHXL.obj" \
 "./basestation.obj" \
+"./bmi160.obj" \
+"./bmi160_support.obj" \
 "./buffers.obj" \
 "./ccfg.obj" \
 "./i2c_sensors.obj" \
@@ -26,6 +28,7 @@ ORDERED_OBJS += \
 "./scif_osal_tirtos.obj" \
 "./sensor_controller.obj" \
 "./sensors_batmon.obj" \
+"./spi_flash.obj" \
 "./tag.obj" \
 "./uart.obj" \
 "./vildehaye.obj" \
@@ -180,8 +183,8 @@ tag-cc1310-launchpad.hex: $(EXE_OUTPUTS)
 clean:
 	-$(RM) $(GEN_CMDS__QUOTED)$(GEN_MISC_FILES__QUOTED)$(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)$(GEN_OPTS__QUOTED)
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
-	-$(RM) "CC1310_LAUNCHXL.obj" "basestation.obj" "buffers.obj" "ccfg.obj" "i2c_sensors.obj" "leds.obj" "main.obj" "radio_setup.obj" "random.obj" "receive.obj" "rf_queue_pointer.obj" "scif.obj" "scif_framework.obj" "scif_osal_tirtos.obj" "sensor_controller.obj" "sensors_batmon.obj" "tag.obj" "uart.obj" "vildehaye.obj" "watchdog.obj" 
-	-$(RM) "CC1310_LAUNCHXL.d" "basestation.d" "buffers.d" "ccfg.d" "i2c_sensors.d" "leds.d" "main.d" "radio_setup.d" "random.d" "receive.d" "rf_queue_pointer.d" "scif.d" "scif_framework.d" "scif_osal_tirtos.d" "sensor_controller.d" "sensors_batmon.d" "tag.d" "uart.d" "vildehaye.d" "watchdog.d" 
+	-$(RM) "CC1310_LAUNCHXL.obj" "basestation.obj" "bmi160.obj" "bmi160_support.obj" "buffers.obj" "ccfg.obj" "i2c_sensors.obj" "leds.obj" "main.obj" "radio_setup.obj" "random.obj" "receive.obj" "rf_queue_pointer.obj" "scif.obj" "scif_framework.obj" "scif_osal_tirtos.obj" "sensor_controller.obj" "sensors_batmon.obj" "spi_flash.obj" "tag.obj" "uart.obj" "vildehaye.obj" "watchdog.obj" 
+	-$(RM) "CC1310_LAUNCHXL.d" "basestation.d" "bmi160.d" "bmi160_support.d" "buffers.d" "ccfg.d" "i2c_sensors.d" "leds.d" "main.d" "radio_setup.d" "random.d" "receive.d" "rf_queue_pointer.d" "scif.d" "scif_framework.d" "scif_osal_tirtos.d" "sensor_controller.d" "sensors_batmon.d" "spi_flash.d" "tag.d" "uart.d" "vildehaye.d" "watchdog.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

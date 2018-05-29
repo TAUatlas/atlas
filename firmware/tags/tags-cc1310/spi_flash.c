@@ -34,13 +34,20 @@ bool setWEN(){
     bool ret = SPI_transfer(spiHandle, &spiTransaction);
     PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_OFF);
 
-    if (ret == false)
+    // read status regiter command
+    spiTxBuffer[0] = 0x5;
+    spiTransaction.count = 2;
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_ON);
+    ret &= SPI_transfer(spiHandle, &spiTransaction);
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_OFF);
+
+    if (ret == false || (spiRxBuffer[1] & 2)== 0)
         return false;
 
     return true;
 }
 
-bool eraseChip(){
+bool spiFlashEraseChip(){
     // wait until previous action is done
     while (getWIP() != 0);
 
@@ -59,7 +66,33 @@ bool eraseChip(){
     return false;
 }
 
-bool writePage(uint32_t page, uint8_t* data){
+bool spiFlashReset(){
+    // wait until previous action is done
+    while (getWIP() != 0);
+
+    // reset enable
+    spiTxBuffer[0] = 0x66;
+    spiTransaction.count = 1;
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_ON);
+    bool ret = SPI_transfer(spiHandle, &spiTransaction);
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_OFF);
+
+    if (ret == false)
+        return false;
+
+    Task_sleep(1000);
+
+    // reset memory
+    spiTxBuffer[0] = 0x99;
+    spiTransaction.count = 1;
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_ON);
+    ret = SPI_transfer(spiHandle, &spiTransaction);
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_OFF);
+
+    return ret;
+}
+
+bool spiFlashWritePage(uint32_t page, uint8_t* data){
     // wait until previous action is done
     while (getWIP() != 0);
 
@@ -84,7 +117,7 @@ bool writePage(uint32_t page, uint8_t* data){
     return false;
 }
 
-bool readPage(uint32_t page, uint8_t* data){
+bool spiFlashReadPage(uint32_t page, uint8_t* data){
     // wait until previous action is done
     while (getWIP() != 0);
 
@@ -105,7 +138,6 @@ bool readPage(uint32_t page, uint8_t* data){
     memcpy(data, spiRxBuffer + HEADER_SIZE, PAGE_SIZE);
     return ret;
 
-    return false;
 }
 
 void spiFlash_init() {
@@ -122,3 +154,20 @@ void spiFlash_init() {
     spiTransaction.txBuf = spiTxBuffer;
     spiTransaction.rxBuf = spiRxBuffer;
 }
+
+bool spiFlashEnter4ByteMode() {
+    // wait until previous action is done
+    while (getWIP() != 0);
+
+    // set 4 byte mode command
+    spiTxBuffer[0] = 0xB7;
+
+    spiTransaction.count = 1;
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_ON);
+    bool ret = SPI_transfer(spiHandle, &spiTransaction);
+    PIN_setOutputValue(hFlashPin,Board_SPI_FLASH_CS,Board_FLASH_CS_OFF);
+    return ret;
+}
+
+
+

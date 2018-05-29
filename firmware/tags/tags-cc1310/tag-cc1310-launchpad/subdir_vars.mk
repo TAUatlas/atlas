@@ -14,6 +14,8 @@ CMD_SRCS += \
 C_SRCS += \
 ../CC1310_LAUNCHXL.c \
 ../basestation.c \
+../bmi160.c \
+../bmi160_support.c \
 ../buffers.c \
 ../ccfg.c \
 ../i2c_sensors.c \
@@ -28,6 +30,7 @@ C_SRCS += \
 ../scif_osal_tirtos.c \
 ../sensor_controller.c \
 ../sensors_batmon.c \
+../spi_flash.c \
 ../tag.c \
 ../uart.c \
 ../vildehaye.c \
@@ -46,6 +49,8 @@ GEN_MISC_DIRS += \
 C_DEPS += \
 ./CC1310_LAUNCHXL.d \
 ./basestation.d \
+./bmi160.d \
+./bmi160_support.d \
 ./buffers.d \
 ./ccfg.d \
 ./i2c_sensors.d \
@@ -60,6 +65,7 @@ C_DEPS += \
 ./scif_osal_tirtos.d \
 ./sensor_controller.d \
 ./sensors_batmon.d \
+./spi_flash.d \
 ./tag.d \
 ./uart.d \
 ./vildehaye.d \
@@ -71,6 +77,8 @@ GEN_OPTS += \
 OBJS += \
 ./CC1310_LAUNCHXL.obj \
 ./basestation.obj \
+./bmi160.obj \
+./bmi160_support.obj \
 ./buffers.obj \
 ./ccfg.obj \
 ./i2c_sensors.obj \
@@ -85,6 +93,7 @@ OBJS += \
 ./scif_osal_tirtos.obj \
 ./sensor_controller.obj \
 ./sensors_batmon.obj \
+./spi_flash.obj \
 ./tag.obj \
 ./uart.obj \
 ./vildehaye.obj \
@@ -96,6 +105,8 @@ GEN_MISC_DIRS__QUOTED += \
 OBJS__QUOTED += \
 "CC1310_LAUNCHXL.obj" \
 "basestation.obj" \
+"bmi160.obj" \
+"bmi160_support.obj" \
 "buffers.obj" \
 "ccfg.obj" \
 "i2c_sensors.obj" \
@@ -110,6 +121,7 @@ OBJS__QUOTED += \
 "scif_osal_tirtos.obj" \
 "sensor_controller.obj" \
 "sensors_batmon.obj" \
+"spi_flash.obj" \
 "tag.obj" \
 "uart.obj" \
 "vildehaye.obj" \
@@ -118,6 +130,8 @@ OBJS__QUOTED += \
 C_DEPS__QUOTED += \
 "CC1310_LAUNCHXL.d" \
 "basestation.d" \
+"bmi160.d" \
+"bmi160_support.d" \
 "buffers.d" \
 "ccfg.d" \
 "i2c_sensors.d" \
@@ -132,6 +146,7 @@ C_DEPS__QUOTED += \
 "scif_osal_tirtos.d" \
 "sensor_controller.d" \
 "sensors_batmon.d" \
+"spi_flash.d" \
 "tag.d" \
 "uart.d" \
 "vildehaye.d" \
@@ -144,6 +159,8 @@ GEN_FILES__QUOTED += \
 C_SRCS__QUOTED += \
 "../CC1310_LAUNCHXL.c" \
 "../basestation.c" \
+"../bmi160.c" \
+"../bmi160_support.c" \
 "../buffers.c" \
 "../ccfg.c" \
 "../i2c_sensors.c" \
@@ -158,6 +175,7 @@ C_SRCS__QUOTED += \
 "../scif_osal_tirtos.c" \
 "../sensor_controller.c" \
 "../sensors_batmon.c" \
+"../spi_flash.c" \
 "../tag.c" \
 "../uart.c" \
 "../vildehaye.c" \

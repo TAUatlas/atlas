@@ -252,6 +252,14 @@ i2c_sensors.obj: ../uart.h
 i2c_sensors.obj: C:/ti/simplelink_cc13x0_sdk_1_50_00_08/source/ti/drivers/UART.h
 i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 i2c_sensors.obj: C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Mailbox.h
+i2c_sensors.obj: ../spi_flash.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h
+i2c_sensors.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h
+i2c_sensors.obj: C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Task.h
+i2c_sensors.obj: C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Clock.h
+i2c_sensors.obj: ../config.h
+i2c_sensors.obj: ../bmi160_support.h
+i2c_sensors.obj: ../bmi160.h
 
 ../i2c_sensors.c: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h: 
@@ -505,3 +513,11 @@ C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Sem
 C:/ti/simplelink_cc13x0_sdk_1_50_00_08/source/ti/drivers/UART.h: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stddef.h: 
 C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Mailbox.h: 
+../spi_flash.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/string.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdlib.h: 
+C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Task.h: 
+C:/ti/simplelink_cc13x0_sdk_1_50_00_08/kernel/tirtos/packages/ti/sysbios/knl/Clock.h: 
+../config.h: 
+../bmi160_support.h: 
+../bmi160.h: 

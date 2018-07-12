@@ -39,5 +39,6 @@ bool spiFlashWritePage(uint32_t page, uint8_t* data);
 bool spiFlashEraseChip();
 bool spiFlashReset();
 bool spiFlashEnter4ByteMode();
+void spiFlash_init();
 
 #endif /* SPI_FLASH_H_ */

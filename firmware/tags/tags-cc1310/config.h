@@ -77,7 +77,7 @@
 #define CCFG_FORCE_VDDR_HH 0x0        // Use default VDDR trim
 //#define CCFG_FORCE_VDDR_HH 0x1 // Use default VDDR trim
 
-#define BUFFER_COUNT 12
+#define BUFFER_COUNT 9
 #define BUFFER_SIZE  256
 
 #define LEDS_GRN_TASK_PRIORITY         1

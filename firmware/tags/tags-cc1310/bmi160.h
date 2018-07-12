@@ -11275,7 +11275,7 @@ u32 v_fifo_length_u32);
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_read_fifo_header_data(u32 v_fifo_length_u32);
+//BMI160_RETURN_FUNCTION_TYPE bmi160_read_fifo_header_data(u32 v_fifo_length_u32);
 /*!
  *	@brief This function used for reading
  *	bmi160_t structure

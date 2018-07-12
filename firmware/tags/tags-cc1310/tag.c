@@ -1179,6 +1179,7 @@ void tagTask_init() {
 	} else {
 		System_printf("configuration length %d\n",length);
 		uint16_t len = vildehayeHandlePacketNaked(cdata+2, length);
+		I2CSensorsSemaphore_post();
 		flashSetConfigurationLimit(len);
 		uint8_t c = flashGetLastConfiguration();
 		if (c != 255) tag_gotoConfiguration(c);

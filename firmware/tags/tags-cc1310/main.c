@@ -55,27 +55,23 @@ int main(void) {
 	receive_init();
 
 	System_printf("going to radio setup\n");
-	/*uartTasks_init(Board_UART);
-	    SPI_init();
-	    i2cSensorsInit();
-	    testTask_init();*/
+	uartTasks_init(Board_UART);
 	radioSetup_init();
 
 //#if defined(CC1310_V3) || ( defined(CC1310_LAUNCHPAD) && defined(TAG_FIRMWARE) )
 #if defined(CC1310_V3)
-	uartTasks_init(Board_UART);
 	SPI_init();
     spiFlash_init();
+    tagTask_init();
+	i2cSensors_init();
 
-	i2cSensorsInit();
 #else
 
 #ifdef TAG_FIRMWARE
-  //flash_displayAddresses();
-	//watchdog_init( 2*tagPeriodMs, 8*tagPeriodMs );
-
-	//sensorcontroller_startTasks();
-
+	watchdog_init( 2*tagPeriodMs, 8*tagPeriodMs );
+    SPI_init();
+    spiFlash_init();
+    i2cSensors_init();
 	tagTask_init();
 #endif
 

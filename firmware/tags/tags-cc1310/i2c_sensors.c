@@ -28,21 +28,28 @@
 I2C_Handle      i2c;
 I2C_Params      i2cParams;
 I2C_Transaction i2cTransaction;
-uint8_t txBuffer[10];
-uint8_t rxBuffer[30];
-float factor = 1;
-uint8_t gRange = 2;
 
-#define TAG_TASK_STACK_SIZE 1024
+#define SENSORS_TASK_STACK_SIZE 1024
 
-static Task_Params testTaskParams;
-Task_Struct testTask;    /* not static so you can see in ROV */
-static uint8_t testTaskStack[TAG_TASK_STACK_SIZE];
+// Globals
+static Task_Params sensorsTaskParams;
+Task_Struct sensorsTask;    /* not static so you can see in ROV */
+static uint8_t sensorsTaskStack[SENSORS_TASK_STACK_SIZE];
 Task_Struct sensorsUartTask;    /* not static so you can see in ROV */
-static void bmi160Function(UArg arg0, UArg arg1);
-void readDataFunction();
+uint8_t accelGRange;
+uint8_t accelSampleDuration;
+uint32_t accelFactor;
+float accelSampleRate;
 
-void i2cSensorsInit() {
+Semaphore_Struct semStruct;
+Semaphore_Handle semHandle = NULL;
+
+// Declarations
+static void sensorsFunction(UArg arg0, UArg arg1);
+void readDataFunction();
+void readAccel(uint32_t count, uint32_t ticks, int* pageCounter, Types_FreqHz freq);
+
+void i2cSensors_init() {
     I2C_init();
 	I2C_Params      params;
 	I2C_Params_init(&params);
@@ -52,36 +59,54 @@ void i2cSensorsInit() {
 	    System_printf("I2C did not open");
 	}
 
-	Task_Params_init(&testTaskParams);
-    testTaskParams.stackSize = TAG_TASK_STACK_SIZE;
-    testTaskParams.priority  = 5;
-    testTaskParams.stack     = &testTaskStack;
-    testTaskParams.arg0       = (UInt)1000000;
+	Task_Params_init(&sensorsTaskParams);
+	sensorsTaskParams.stackSize = SENSORS_TASK_STACK_SIZE;
+	sensorsTaskParams.priority  = 5;
+	sensorsTaskParams.stack     = &sensorsTaskStack;
+	sensorsTaskParams.arg0       = (UInt)1000000;
 
-    Task_construct(&testTask, bmi160Function, &testTaskParams, NULL);
+    Task_construct(&sensorsTask, sensorsFunction, &sensorsTaskParams, NULL);
 }
 
-void bmi160Setup_TicksFactor(const uint32_t* sensorData) {
-    factor=*sensorData;
+Semaphore_Handle getSemaphore(){
+    if (semHandle != NULL){
+        return semHandle;
+    }
+
+    Semaphore_Params semParams;
+    Semaphore_Params_init(&semParams);
+    Semaphore_construct(&semStruct, 0, &semParams);
+    semHandle = Semaphore_handle(&semStruct);
+    return semHandle;
+}
+void bmi160SetupAccelTicksFactor(const uint8_t* sensorData, uint16_t dataLength) {
+    accelFactor=0;
+    memcpy(&accelFactor, sensorData, dataLength);
 }
 
-void bmi160Setup_GRange(const uint8_t* sensorData) {
-    gRange = *sensorData;
+void bmi160SetupAccelGRange(const uint8_t* sensorData) {
+    accelGRange = *sensorData;
 }
-static void bmi160Function(UArg arg0, UArg arg1) {
-	bmi160_initialize_sensor(gRange);
-	struct bmi160_accel_t accelxyz;
-    BMI160_RETURN_FUNCTION_TYPE com_rslt;
-    int i=0,pageCounter=0;
-    uint8_t byteCounter = 9;
-    uint8_t page[PAGE_SIZE];
-    uint8_t check[PAGE_SIZE];
-    u8 v_data_rdy_u8;
-    buffer_descriptor d;
 
-    bool b;
+void bmi160SetupAccelSampleRate(const uint8_t* sensorData, uint16_t dataLength){
+    accelSampleRate = 0;
+    memcpy(&accelSampleRate, sensorData, dataLength);
+}
+
+void bmi160SetupAccelSampleDuration(const uint8_t* sensorData){
+    accelSampleDuration = *sensorData;
+}
+
+void I2CSensorsSemaphore_post(){
+    Semaphore_post(getSemaphore());
+}
+
+static void sensorsFunction(UArg arg0, UArg arg1) {
+
+    int pageCounter=0;
+    //uint8_t pageBaro[PAGE_SIZE];
     Types_FreqHz freq;
-    Timestamp_getFreq(&freq);
+    buffer_descriptor d;
 
     // check commands - long wait for flash boot and enough time for user command
     if (Mailbox_pend(uartRxMailbox, &d, 10000000)){
@@ -91,60 +116,40 @@ static void bmi160Function(UArg arg0, UArg arg1) {
         }
     }
 
-    // read configuration
-    spiFlashReadPage(pageCounter, page);
+    Mailbox_pend(freeMailbox, &d, BIOS_WAIT_FOREVER);
+    char* string = buffers[ d.id ];
+    sprintf(string, "BMI160 waiting for semaphore\r\n");
+    d.length = strlen(string);
+    Mailbox_post(uartTxMailbox, &d, BIOS_WAIT_FOREVER);
 
-    uint32_t ticks = factor * 1000000 / Clock_tickPeriod;//*((uint32_t*)(page+2));
     // write mode
     spiFlashEraseChip(); // can't start writing without clearing the flash
-    uint32_t start = Timestamp_get32();
-	while (true){
+
+    // wait for tag init to read configuration
+    Semaphore_pend(getSemaphore(), BIOS_WAIT_FOREVER);
+
+    Mailbox_pend(freeMailbox, &d, BIOS_WAIT_FOREVER);
+    string = buffers[ d.id ];
+    sprintf(string, "semaphore done factor=%d,dur=%d,G=%d,rate=%f\r\n",accelFactor,accelSampleDuration,accelGRange,accelSampleRate);
+    d.length = strlen(string);
+    Mailbox_post(uartTxMailbox, &d, BIOS_WAIT_FOREVER);
+
+    Semaphore_delete(semHandle);
+    Timestamp_getFreq(&freq);
+    bmi160_initialize_sensor(accelGRange, accelSampleRate);
+    uint32_t ticksAccel = accelFactor * 1000000 / Clock_tickPeriod;
+
+    while (true){
+        readAccel(accelSampleDuration*accelSampleRate, (1000000 / Clock_tickPeriod)/accelSampleRate, &pageCounter, freq);
+/*#if 1
+        Task_sleep(100000);
+        while (1){
+        buffer_descriptor d;
+
         Mailbox_pend(freeMailbox, &d, BIOS_WAIT_FOREVER);
-        uint8_t* string = buffers[ d.id ];
-        if (bmi160_get_accel_data_rdy(&v_data_rdy_u8) == 0){
-            if (bmi160_read_accel_xyz(&accelxyz) != 0){
-                sprintf(string, "BMI160 ret=%d error reading\r\n",com_rslt);
-            }else{
-                //BMI160_RETURN_FUNCTION_TYPE com_rslt = bmi160_read_gyro_xyz(&gyro);
-                sprintf(string, "BMI160 x=%d y=%d z=%d count=%d page=%d time=%d\r\n", (uint16_t)accelxyz.x, (uint16_t)accelxyz.y, (uint16_t)accelxyz.z, byteCounter, pageCounter, Timestamp_get32()/freq.lo);
-                if (PAGE_SIZE - byteCounter > 6){
-                    *((struct bmi160_accel_t*)(page + byteCounter)) = accelxyz;
-                    byteCounter+=6;
-                }else{
-                    uint32_t time = Timestamp_get32()/freq.lo;
-                    sprintf(string, "BMI160 freq.lo=%d now=%d factor=%d G=%d\r\n", freq.lo, time, factor, gRange);
-                    page[0] = BMI_160_PAGE;
-
-                    memcpy(page+1, &time, 4);
-                    memcpy(page+5, &factor, 4);
-                    spiFlashWritePage(pageCounter, page);
-
-                    // check
-                    spiFlashReadPage(pageCounter, check);
-                    b = true;
-                    for (i=0;i<256;i++){
-                        if (check[i] != page[i]){
-                            b = false;
-                            break;
-                        }
-                    }
-
-                    if (b){
-                        sprintf(string+strlen(string), "CHECK page=%d\r\n", pageCounter);
-                        pageCounter++;
-                    }
-
-                    byteCounter = 9;
-                    start = Timestamp_get32();
-                }
-            }
-        }else{
-            sprintf(string, "BMI160 ret=%d d=%d not ready\r\n",com_rslt,v_data_rdy_u8);
-        }
-
-#if 0
+        char* string = buffers[ d.id ];
 		I2C_Transaction i2cTransaction;
-		i2cTransaction.slaveAddress = (0x76 | 0x00); // BME280 with address pin tied to VDD
+		i2cTransaction.slaveAddress = (0x76 | 0x00); // r with address pin tied to VDD
 
 		uint8_t value;
 		uint8_t writeBuffer[2];
@@ -154,7 +159,7 @@ static void bmi160Function(UArg arg0, UArg arg1) {
 		i2cTransaction.writeCount = 1;
 		i2cTransaction.readBuf = &value;
 		i2cTransaction.readCount = 1;
-		ret = I2C_transfer(i2cHandle, &i2cTransaction);
+		bool ret = I2C_transfer(i2c, &i2cTransaction);
 		sprintf(string+strlen(string), "ret=%d id=0x%02x\r\n",ret, value);
 
 		writeBuffer[0] = 0xF2; // CTRL_HUM
@@ -163,7 +168,7 @@ static void bmi160Function(UArg arg0, UArg arg1) {
 		i2cTransaction.writeCount = 2;
 		i2cTransaction.readBuf = &value;
 		i2cTransaction.readCount = 0;
-		ret = I2C_transfer(i2cHandle, &i2cTransaction);
+		ret = I2C_transfer(i2c, &i2cTransaction);
 
 		writeBuffer[0] = 0xF4; // CTRL_MEAS
 		writeBuffer[1] = (1 << 5) // measure temp, no oversampling
@@ -173,7 +178,7 @@ static void bmi160Function(UArg arg0, UArg arg1) {
 		i2cTransaction.writeCount = 2;
 		i2cTransaction.readBuf = &value;
 		i2cTransaction.readCount = 0;
-		ret = I2C_transfer(i2cHandle, &i2cTransaction);
+		ret = I2C_transfer(i2c, &i2cTransaction);
 
 		do {
 			writeBuffer[0] = 0xF3; // status
@@ -181,7 +186,7 @@ static void bmi160Function(UArg arg0, UArg arg1) {
 			i2cTransaction.writeCount = 1;
 			i2cTransaction.readBuf = &value;
 			i2cTransaction.readCount = 1;
-			ret = I2C_transfer(i2cHandle, &i2cTransaction);
+			ret = I2C_transfer(i2c, &i2cTransaction);
 		} while ((value & 0x04) != 0); // while measuring, continue to poll
 
 		uint8_t data[8];
@@ -190,18 +195,80 @@ static void bmi160Function(UArg arg0, UArg arg1) {
 		i2cTransaction.writeCount = 1;
 		i2cTransaction.readBuf = data;
 		i2cTransaction.readCount = 8;
-		ret = I2C_transfer(i2cHandle, &i2cTransaction);
-
+		ret = I2C_transfer(i2c, &i2cTransaction);
+		int i;
 		for (i=0; i<8; i++) {
 			sprintf(string + strlen(string), "%02x ",data[i]);
 		}
-#endif
-
 		d.length = strlen(string);
-		Mailbox_post(uartTxMailbox, &d, BIOS_WAIT_FOREVER);
+        Mailbox_post(uartTxMailbox, &d, BIOS_WAIT_FOREVER);
+#endif*/
 
-		Task_sleep(ticks);
+
+        Task_sleep(ticksAccel);
 	}
+}
+
+void readAccel(uint32_t count, uint32_t ticks, int* pageCounter, Types_FreqHz freq){
+    buffer_descriptor d;
+    struct bmi160_accel_t accelxyz;
+    static uint8_t byteCounter = 18;
+    static uint8_t pageAccel[PAGE_SIZE];
+    BMI160_RETURN_FUNCTION_TYPE com_rslt;
+    uint8_t check[PAGE_SIZE];
+    uint32_t time;
+
+    int i,j;
+    for (i=0; i<count; i++){
+        Mailbox_pend(freeMailbox, &d, BIOS_WAIT_FOREVER);
+        char* string = buffers[ d.id ];
+
+        if (bmi160_read_accel_xyz(&accelxyz) != 0){
+            sprintf(string, "BMI160 ret=%d error reading\r\n",com_rslt);
+        }else{
+            if (byteCounter == 10)
+                time = Timestamp_get32()/freq.lo;
+
+            sprintf(string, "BMI160 x=%d y=%d z=%d count=%d count=%d ticks=%d\r\n", (uint16_t)accelxyz.x, (uint16_t)accelxyz.y, (uint16_t)accelxyz.z, byteCounter, i, ticks);
+            if (PAGE_SIZE - byteCounter > 6){
+                *((struct bmi160_accel_t*)(pageAccel + byteCounter)) = accelxyz;
+                byteCounter+=6;
+            }else{
+                //uint32_t time = Timestamp_get32()/freq.lo;
+                sprintf(string, "BMI160 freq.lo=%d now=%d factor=%d G=%x\r\n", freq.lo, time, accelFactor, accelGRange);
+                pageAccel[0] = BMI_160_PAGE;
+
+                memcpy(pageAccel+1, &time, 4);
+                memcpy(pageAccel+5, &accelSampleDuration, 4);
+                memcpy(pageAccel+9, &accelFactor, 4);
+                memcpy(pageAccel+13, &accelSampleRate, 4);
+                pageAccel[17] = accelGRange;
+                spiFlashWritePage(*pageCounter, pageAccel);
+
+                /*// check
+                spiFlashReadPage(*pageCounter, check);
+                bool b = true;
+
+                for (j=0;j<256;j++){
+                    if (check[j] != pageAccel[j]){
+                        b = false;
+                        break;
+                    }
+                }
+
+                if (b){
+                    sprintf(string+strlen(string), "CHECK page=%d\r\n", *pageCounter);
+
+                }*/
+
+                (*pageCounter)++;
+                byteCounter = 18;
+            }
+        }
+        d.length = strlen(string);
+        Mailbox_post(uartTxMailbox, &d, BIOS_WAIT_FOREVER);
+        Task_sleep(ticks);
+    }
 }
 
 void readDataFunction(){
@@ -230,7 +297,7 @@ void readDataFunction(){
 
 
 /* value should be  0110 1000 = 0x68 */
-uint8_t mpu9150WhoAmI(uint8_t* value, uint8_t address0) {
+/*uint8_t mpu9150WhoAmI(uint8_t* value, uint8_t address0) {
 	I2C_Transaction i2cTransaction;
 	uint8_t regAddress[] = { 0x75 };
 	i2cTransaction.writeBuf = regAddress;
@@ -242,4 +309,4 @@ uint8_t mpu9150WhoAmI(uint8_t* value, uint8_t address0) {
 	if (!ret) return 0;
 	else      return 1;
 }
-
+*/

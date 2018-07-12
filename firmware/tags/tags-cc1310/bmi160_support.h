@@ -105,8 +105,8 @@ struct gyro_sleep_setting {
 #define	BMI160_MAG_INTERFACE_ON_PRIMARY_ON		0x02
 
 /* General Defines */
-extern uint8_t         txBuffer[10];
-extern uint8_t         rxBuffer[30];
+uint8_t         txBuffer[10];
+uint8_t         rxBuffer[30];
 
 /* Global Variables */
 extern    I2C_Handle      i2c;
@@ -123,7 +123,7 @@ extern    I2C_Transaction i2cTransaction;
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange);
+BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange, float sampleRate);
 /*!
  *	@brief This Function used to read the sensor data using
  *	different running mode
@@ -147,7 +147,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange);
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8);
+BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8, u8 rate);
 /*!
  *	@brief This function used for interrupt configuration
  *

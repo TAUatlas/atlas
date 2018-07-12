@@ -80,7 +80,7 @@ struct trim_data *mag_trim;
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange)
+BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange, float sampleRate)
 {
 	BMI160_RETURN_FUNCTION_TYPE com_rslt = C_BMI160_ZERO_U8X;
  /*	Based on the user need configure I2C or SPI interface.
@@ -99,16 +99,34 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange)
  */
 	com_rslt += bmi160_init(&s_bmi160);
 	/**** standard 9Dof with FIFO output****/
-	com_rslt += bmi160_config_running_mode(ACCEL_PEDOMETER);
-	uint8_t range = BMI160_ACCEL_RANGE_2G;
-	if (gRange == 4)
-	    range = BMI160_ACCEL_RANGE_4G;
-	else if (gRange == 8)
-	    range = BMI160_ACCEL_RANGE_8G;
-	else if (gRange == 16)
-	        range = BMI160_ACCEL_RANGE_16G;
-	com_rslt += bmi160_set_accel_range(range);
+	u8 rate = BMI160_ACCEL_OUTPUT_DATA_RATE_1600HZ;
+	if (sampleRate <= 6)
+        rate = BMI160_ACCEL_OUTPUT_DATA_RATE_6_25HZ;
+	else if (sampleRate <= 12)
+	    rate = BMI160_ACCEL_OUTPUT_DATA_RATE_12_5HZ;
+	else if (sampleRate <= 25)
+	        rate = BMI160_ACCEL_OUTPUT_DATA_RATE_25HZ;
+	else if (sampleRate <= 50)
+	    rate = BMI160_ACCEL_OUTPUT_DATA_RATE_50HZ;
+    else if (sampleRate <= 100)
+        rate = BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ;
+    else if (sampleRate <= 200)
+        rate = BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ;
+    else if (sampleRate <= 400)
+        rate = BMI160_ACCEL_OUTPUT_DATA_RATE_400HZ;
+    else if (sampleRate <= 800)
+        rate = BMI160_ACCEL_OUTPUT_DATA_RATE_800HZ;
 
+	uint8_t range = BMI160_ACCEL_RANGE_2G;
+	switch (gRange){
+        case 4: range = BMI160_ACCEL_RANGE_4G; break;
+        case 8:range = BMI160_ACCEL_RANGE_8G; break;
+        case 16:range = BMI160_ACCEL_RANGE_16G; break;
+	}
+	com_rslt += bmi160_set_accel_range(range);
+    s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+
+	com_rslt += bmi160_config_running_mode(ACCEL_PEDOMETER, rate);
 	return com_rslt;
 }
 /*!
@@ -133,8 +151,8 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(uint8_t gRange)
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(
-u8 v_running_mode_u8)
+BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode( /*USED*/
+u8 v_running_mode_u8, u8 rate)
 {
 	struct gyro_sleep_setting gyr_setting;
 	struct bmi160_mag_xyz_s32_t magxyz;
@@ -142,12 +160,12 @@ u8 v_running_mode_u8)
 	u8 v_mag_interface_u8 = C_BMI160_ZERO_U8X;
 	BMI160_RETURN_FUNCTION_TYPE com_rslt = ERROR;
 	/* Configure the gyro sleep setting based on your need*/
-	if (v_running_mode_u8 == STANDARD_UI_ADVANCEPOWERSAVE) {
+	/*if (v_running_mode_u8 == STANDARD_UI_ADVANCEPOWERSAVE) {
 		gyr_setting. sleep_trigger = C_BMI160_FOUR_U8X;
 		gyr_setting. wakeup_trigger = C_BMI160_TWO_U8X;
 		gyr_setting. sleep_state = C_BMI160_ZERO_U8X;
 		gyr_setting. wakeup_int = C_BMI160_ZERO_U8X;
-	}
+	}*/
 	/* The below code used for enable and
 	disable the secondary mag interface*/
 	com_rslt = bmi160_get_if_mode(&v_mag_interface_u8);
@@ -167,219 +185,219 @@ u8 v_running_mode_u8)
 		BMI160_MAG_INTERFACE_OFF_PRIMARY_ON);
 		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
 	}
-	if (((v_running_mode_u8 == STANDARD_UI_9DOF_FIFO)
-		|| (v_running_mode_u8 == APPLICATION_HEAD_TRACKING) ||
-		(v_running_mode_u8 == APPLICATION_NAVIGATION)) &&
-		(v_mag_interface_u8 == BMI160_MAG_INTERFACE_OFF_PRIMARY_ON)) {
-			/* Init the magnetometer */
-			com_rslt += bmi160_bmm150_mag_interface_init();
-			/* bmi160_delay_ms in ms */
-			s_bmi160.delay_msec(C_BMI160_ONE_U8X);
-	}
+	//if (((v_running_mode_u8 == STANDARD_UI_9DOF_FIFO)
+	//	|| (v_running_mode_u8 == APPLICATION_HEAD_TRACKING) ||
+	//	(v_running_mode_u8 == APPLICATION_NAVIGATION)) &&
+	//	(v_mag_interface_u8 == BMI160_MAG_INTERFACE_OFF_PRIMARY_ON)) {
+	//		/* Init the magnetometer */
+	//		com_rslt += bmi160_bmm150_mag_interface_init();
+	//		/* bmi160_delay_ms in ms */
+	//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);
+	//}
 	switch (v_running_mode_u8) {
-	case STANDARD_UI_9DOF_FIFO:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-		/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-		/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as Normal */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as Normal */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 100Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-		BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 100Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-		BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/***** read FIFO data based on interrupt*****/
-		com_rslt += bmi160_interrupt_configuration();
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO header*/
-		com_rslt += bmi160_set_fifo_header_enable(FIFO_HEADER_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO mag*/
-		com_rslt += bmi160_set_fifo_mag_enable(FIFO_MAG_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO accel*/
-		com_rslt += bmi160_set_fifo_accel_enable(FIFO_ACCEL_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO gyro*/
-		com_rslt += bmi160_set_fifo_gyro_enable(FIFO_GYRO_ENABLE);
-		/* Enable the FIFO time*/
-		com_rslt += bmi160_set_fifo_time_enable(FIFO_TIME_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO stop on full*/
-		com_rslt += bmi160_set_fifo_stop_on_full(
-			FIFO_STOPONFULL_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO water mark interrupt1*/
-		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ZERO_U8X,
-		FIFO_WM_INTERRUPT_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO water mark interrupt2*/
-		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ONE_U8X,
-		FIFO_WM_INTERRUPT_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set the fifo water mark*/
-		com_rslt += bmi160_set_fifo_wm(C_BMI160_TWO_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read the FIFO data*/
-		com_rslt +=  bmi160_read_fifo_header_data(FIFO_FRAME);
-	break;
-	case STANDARD_UI_IMU_FIFO:
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as Normal */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as Normal */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 100Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-			BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 100Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-			BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/***** read FIFO data based on interrupt*****/
-		com_rslt += bmi160_interrupt_configuration();
-		/* Enable the FIFO header*/
-		com_rslt += bmi160_set_fifo_header_enable(FIFO_HEADER_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO accel*/
-		com_rslt += bmi160_set_fifo_accel_enable(FIFO_ACCEL_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO gyro*/
-		com_rslt += bmi160_set_fifo_gyro_enable(FIFO_GYRO_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO time*/
-		com_rslt += bmi160_set_fifo_time_enable(FIFO_TIME_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO stop on full*/
-		com_rslt += bmi160_set_fifo_stop_on_full(
-			FIFO_STOPONFULL_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO water mark interrupt1*/
-		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ZERO_U8X,
-		FIFO_WM_INTERRUPT_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable the FIFO water mark interrupt2*/
-		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ONE_U8X,
-		FIFO_WM_INTERRUPT_ENABLE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set the fifo water mark as 10*/
-		com_rslt += bmi160_set_fifo_wm(C_BMI160_TWO_U8X);
-		/* read the FIFO data*/
-		com_rslt +=  bmi160_read_fifo_header_data(FIFO_FRAME);
-	break;
-	case STANDARD_UI_IMU:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as Normal */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as Normal */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 100Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-			BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 100Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-			BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read gyro data*/
-		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
-		/* read accel data*/
-		com_rslt += bmi160_read_accel_xyz(&accelxyz);
-	break;
-	case STANDARD_UI_ADVANCEPOWERSAVE:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as Normal */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as Normal */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 100Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-			BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 100Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-			BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-
-		/* Enable any motion interrupt - x axis*/
-		com_rslt += bmi160_set_intr_enable_0(C_BMI160_ZERO_U8X,
-		C_BMI160_ONE_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable any motion interrupt - y axis*/
-		com_rslt += bmi160_set_intr_enable_0(C_BMI160_ONE_U8X,
-		C_BMI160_ONE_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable any motion interrupt - z axis*/
-		com_rslt += bmi160_set_intr_enable_0(C_BMI160_TWO_U8X,
-		C_BMI160_ONE_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable no motion interrupt - x axis*/
-		com_rslt += bmi160_set_intr_enable_2(C_BMI160_ZERO_U8X,
-		C_BMI160_ONE_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable no motion interrupt - y axis*/
-		com_rslt += bmi160_set_intr_enable_2(C_BMI160_ONE_U8X,
-		C_BMI160_ONE_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Enable no motion interrupt - z axis*/
-		com_rslt += bmi160_set_intr_enable_2(C_BMI160_TWO_U8X,
-		C_BMI160_ONE_U8X);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set the gyro sleep trigger*/
-		com_rslt += bmi160_set_gyro_sleep_trigger(
-		gyr_setting.sleep_trigger);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set the gyro wakeup trigger*/
-		com_rslt += bmi160_set_gyro_wakeup_trigger(
-		gyr_setting.wakeup_trigger);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set the gyro sleep state*/
-		com_rslt += bmi160_set_gyro_sleep_state(
-		gyr_setting.sleep_state);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set the gyro wakeup interrupt*/
-		com_rslt += bmi160_set_gyro_wakeup_intr(gyr_setting.wakeup_int);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read gyro data*/
-		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
-		/* read accel data*/
-		com_rslt += bmi160_read_accel_xyz(&accelxyz);
-	break;
+//	case STANDARD_UI_9DOF_FIFO:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//		/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//		/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as Normal */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as Normal */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 100Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//		BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 100Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//		BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/***** read FIFO data based on interrupt*****/
+//		com_rslt += bmi160_interrupt_configuration();
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO header*/
+//		com_rslt += bmi160_set_fifo_header_enable(FIFO_HEADER_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO mag*/
+//		com_rslt += bmi160_set_fifo_mag_enable(FIFO_MAG_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO accel*/
+//		com_rslt += bmi160_set_fifo_accel_enable(FIFO_ACCEL_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO gyro*/
+//		com_rslt += bmi160_set_fifo_gyro_enable(FIFO_GYRO_ENABLE);
+//		/* Enable the FIFO time*/
+//		com_rslt += bmi160_set_fifo_time_enable(FIFO_TIME_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO stop on full*/
+//		com_rslt += bmi160_set_fifo_stop_on_full(
+//			FIFO_STOPONFULL_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO water mark interrupt1*/
+//		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ZERO_U8X,
+//		FIFO_WM_INTERRUPT_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO water mark interrupt2*/
+//		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ONE_U8X,
+//		FIFO_WM_INTERRUPT_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set the fifo water mark*/
+//		com_rslt += bmi160_set_fifo_wm(C_BMI160_TWO_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read the FIFO data*/
+//		//com_rslt +=  bmi160_read_fifo_header_data(FIFO_FRAME);
+//	break;
+//	case STANDARD_UI_IMU_FIFO:
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as Normal */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as Normal */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 100Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//			BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 100Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//			BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/***** read FIFO data based on interrupt*****/
+//		com_rslt += bmi160_interrupt_configuration();
+//		/* Enable the FIFO header*/
+//		com_rslt += bmi160_set_fifo_header_enable(FIFO_HEADER_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO accel*/
+//		com_rslt += bmi160_set_fifo_accel_enable(FIFO_ACCEL_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO gyro*/
+//		com_rslt += bmi160_set_fifo_gyro_enable(FIFO_GYRO_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO time*/
+//		com_rslt += bmi160_set_fifo_time_enable(FIFO_TIME_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO stop on full*/
+//		com_rslt += bmi160_set_fifo_stop_on_full(
+//			FIFO_STOPONFULL_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO water mark interrupt1*/
+//		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ZERO_U8X,
+//		FIFO_WM_INTERRUPT_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable the FIFO water mark interrupt2*/
+//		com_rslt += bmi160_set_intr_fifo_wm(C_BMI160_ONE_U8X,
+//		FIFO_WM_INTERRUPT_ENABLE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set the fifo water mark as 10*/
+//		com_rslt += bmi160_set_fifo_wm(C_BMI160_TWO_U8X);
+//		/* read the FIFO data*/
+//		//com_rslt +=  bmi160_read_fifo_header_data(FIFO_FRAME);
+//	break;
+//	case STANDARD_UI_IMU:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as Normal */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as Normal */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 100Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//			BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 100Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//			BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read gyro data*/
+//		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
+//		/* read accel data*/
+//		com_rslt += bmi160_read_accel_xyz(&accelxyz);
+//	break;
+//	case STANDARD_UI_ADVANCEPOWERSAVE:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as Normal */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as Normal */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 100Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//			BMI160_GYRO_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 100Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//			BMI160_ACCEL_OUTPUT_DATA_RATE_100HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//
+//		/* Enable any motion interrupt - x axis*/
+//		com_rslt += bmi160_set_intr_enable_0(C_BMI160_ZERO_U8X,
+//		C_BMI160_ONE_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable any motion interrupt - y axis*/
+//		com_rslt += bmi160_set_intr_enable_0(C_BMI160_ONE_U8X,
+//		C_BMI160_ONE_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable any motion interrupt - z axis*/
+//		com_rslt += bmi160_set_intr_enable_0(C_BMI160_TWO_U8X,
+//		C_BMI160_ONE_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable no motion interrupt - x axis*/
+//		com_rslt += bmi160_set_intr_enable_2(C_BMI160_ZERO_U8X,
+//		C_BMI160_ONE_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable no motion interrupt - y axis*/
+//		com_rslt += bmi160_set_intr_enable_2(C_BMI160_ONE_U8X,
+//		C_BMI160_ONE_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Enable no motion interrupt - z axis*/
+//		com_rslt += bmi160_set_intr_enable_2(C_BMI160_TWO_U8X,
+//		C_BMI160_ONE_U8X);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set the gyro sleep trigger*/
+//		com_rslt += bmi160_set_gyro_sleep_trigger(
+//		gyr_setting.sleep_trigger);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set the gyro wakeup trigger*/
+//		com_rslt += bmi160_set_gyro_wakeup_trigger(
+//		gyr_setting.wakeup_trigger);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set the gyro sleep state*/
+//		com_rslt += bmi160_set_gyro_sleep_state(
+//		gyr_setting.sleep_state);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set the gyro wakeup interrupt*/
+//		com_rslt += bmi160_set_gyro_wakeup_intr(gyr_setting.wakeup_int);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read gyro data*/
+//		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
+//		/* read accel data*/
+//		com_rslt += bmi160_read_accel_xyz(&accelxyz);
+//	break;
 	case ACCEL_PEDOMETER:
 		/*Set the accel mode as Normal write in the register 0x7E*/
 		com_rslt = bmi160_set_command_register(ACCEL_LOWPOWER);
@@ -393,127 +411,126 @@ u8 v_running_mode_u8)
 		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
 		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
 		/* set accel data rate as 25Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-				BMI160_ACCEL_OUTPUT_DATA_RATE_25HZ);
+		com_rslt += bmi160_set_accel_output_data_rate(rate);
 		/* 10 not available*/
 		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
 		/* read accel data*/
 		com_rslt += bmi160_read_accel_xyz(&accelxyz);
 	break;
-	case APPLICATION_HEAD_TRACKING:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as Normal */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as Normal */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 1600Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-		BMI160_GYRO_OUTPUT_DATA_RATE_1600HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 1600Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-		BMI160_ACCEL_OUTPUT_DATA_RATE_1600HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read gyro data*/
-		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
-		/* read accel data */
-		com_rslt += bmi160_read_accel_xyz(&accelxyz);
-		/* read mag data */
-		com_rslt += bmi160_bmm150_mag_compensate_xyz(&magxyz);
-	break;
-	case APPLICATION_NAVIGATION:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as OSRS4 */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as Normal */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 200Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-			BMI160_GYRO_OUTPUT_DATA_RATE_25HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 200Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-			BMI160_ACCEL_OUTPUT_DATA_RATE_25HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read gyro data*/
-		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
-		/* read accel data */
-		com_rslt += bmi160_read_accel_xyz(&accelxyz);
-		/* read mag data*/
-		com_rslt += bmi160_bmm150_mag_compensate_xyz(&magxyz);
-	break;
-	case APPLICATION_REMOTE_CONTROL:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-				/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-		/* bmi160_delay_ms in ms*/
-		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
-		/* Set the accel bandwidth as OSRS4 */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as OSR4 */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_OSR4_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 200Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-			BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 200Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-			BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read gyro data */
-		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
-		/* read accel data*/
-		com_rslt += bmi160_read_accel_xyz(&accelxyz);
-	break;
-	case APPLICATION_INDOOR_NAVIGATION:
-		/*Set the accel mode as Normal write in the register 0x7E*/
-		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/*Set the gyro mode as Normal write in the register 0x7E*/
-		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the accel bandwidth as OSRS4 */
-		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* Set the gryo bandwidth as OSR4 */
-		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_OSR4_MODE);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set gyro data rate as 200Hz*/
-		com_rslt += bmi160_set_gyro_output_data_rate(
-			BMI160_GYRO_OUTPUT_DATA_RATE_400HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* set accel data rate as 200Hz*/
-		com_rslt += bmi160_set_accel_output_data_rate(
-			BMI160_ACCEL_OUTPUT_DATA_RATE_400HZ);
-		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
-		/* read gyro data*/
-		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
-		/* read accel data */
-		com_rslt += bmi160_read_accel_xyz(&accelxyz);
-	break;
+//	case APPLICATION_HEAD_TRACKING:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as Normal */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_NORMAL_AVG4);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as Normal */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 1600Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//		BMI160_GYRO_OUTPUT_DATA_RATE_1600HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 1600Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//		BMI160_ACCEL_OUTPUT_DATA_RATE_1600HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read gyro data*/
+//		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
+//		/* read accel data */
+//		com_rslt += bmi160_read_accel_xyz(&accelxyz);
+//		/* read mag data */
+//		com_rslt += bmi160_bmm150_mag_compensate_xyz(&magxyz);
+//	break;
+//	case APPLICATION_NAVIGATION:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as OSRS4 */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as Normal */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 200Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//			BMI160_GYRO_OUTPUT_DATA_RATE_25HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 200Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//			BMI160_ACCEL_OUTPUT_DATA_RATE_25HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read gyro data*/
+//		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
+//		/* read accel data */
+//		com_rslt += bmi160_read_accel_xyz(&accelxyz);
+//		/* read mag data*/
+//		com_rslt += bmi160_bmm150_mag_compensate_xyz(&magxyz);
+//	break;
+//	case APPLICATION_REMOTE_CONTROL:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//				/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//		/* bmi160_delay_ms in ms*/
+//		s_bmi160.delay_msec(C_BMI160_THIRTY_U8X);
+//		/* Set the accel bandwidth as OSRS4 */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as OSR4 */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_OSR4_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 200Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//			BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 200Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//			BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read gyro data */
+//		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
+//		/* read accel data*/
+//		com_rslt += bmi160_read_accel_xyz(&accelxyz);
+//	break;
+//	case APPLICATION_INDOOR_NAVIGATION:
+//		/*Set the accel mode as Normal write in the register 0x7E*/
+//		com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/*Set the gyro mode as Normal write in the register 0x7E*/
+//		com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the accel bandwidth as OSRS4 */
+//		com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* Set the gryo bandwidth as OSR4 */
+//		com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_OSR4_MODE);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set gyro data rate as 200Hz*/
+//		com_rslt += bmi160_set_gyro_output_data_rate(
+//			BMI160_GYRO_OUTPUT_DATA_RATE_400HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* set accel data rate as 200Hz*/
+//		com_rslt += bmi160_set_accel_output_data_rate(
+//			BMI160_ACCEL_OUTPUT_DATA_RATE_400HZ);
+//		s_bmi160.delay_msec(C_BMI160_ONE_U8X);/* bmi160_delay_ms in ms*/
+//		/* read gyro data*/
+//		com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
+//		/* read accel data */
+//		com_rslt += bmi160_read_accel_xyz(&accelxyz);
+//	break;
 	}
 
 	return com_rslt;
@@ -529,34 +546,34 @@ u8 v_running_mode_u8)
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_interrupt_configuration(void)
-{
-	/* This variable used for provide the communication
-	results*/
-	BMI160_RETURN_FUNCTION_TYPE com_rslt = ERROR;
-
-	/* Configure the in/out control of interrupt1*/
-	com_rslt = bmi160_set_output_enable(C_BMI160_ZERO_U8X,
-	C_BMI160_ONE_U8X);
-	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
-	/* Configure the in/out control of interrupt2*/
-	com_rslt += bmi160_set_output_enable(C_BMI160_ONE_U8X,
-	C_BMI160_ONE_U8X);
-	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
-	/* Configure the interrupt1 active high
-	0x00 -	Active low
-	0x01 -	Active high*/
-	com_rslt += bmi160_set_intr_level(C_BMI160_ZERO_U8X,
-	C_BMI160_ONE_U8X);
-	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
-	/* Configure the interrupt2 active high
-	0x00 -	Active low
-	0x01 -	Active high*/
-	com_rslt += bmi160_set_intr_level(C_BMI160_ONE_U8X,
-	C_BMI160_ONE_U8X);
-	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
-	return com_rslt;
-}
+//BMI160_RETURN_FUNCTION_TYPE bmi160_interrupt_configuration(void)
+//{
+//	/* This variable used for provide the communication
+//	results*/
+//	BMI160_RETURN_FUNCTION_TYPE com_rslt = ERROR;
+//
+//	/* Configure the in/out control of interrupt1*/
+//	com_rslt = bmi160_set_output_enable(C_BMI160_ZERO_U8X,
+//	C_BMI160_ONE_U8X);
+//	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
+//	/* Configure the in/out control of interrupt2*/
+//	com_rslt += bmi160_set_output_enable(C_BMI160_ONE_U8X,
+//	C_BMI160_ONE_U8X);
+//	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
+//	/* Configure the interrupt1 active high
+//	0x00 -	Active low
+//	0x01 -	Active high*/
+//	com_rslt += bmi160_set_intr_level(C_BMI160_ZERO_U8X,
+//	C_BMI160_ONE_U8X);
+//	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
+//	/* Configure the interrupt2 active high
+//	0x00 -	Active low
+//	0x01 -	Active high*/
+//	com_rslt += bmi160_set_intr_level(C_BMI160_ONE_U8X,
+//	C_BMI160_ONE_U8X);
+//	s_bmi160.delay_msec(C_BMI160_ONE_U8X);
+//	return com_rslt;
+//}
 #ifdef INCLUDE_BMI160API
 #define MASK_DATA1	0xFF
 #define MASK_DATA2	0x80
@@ -568,7 +585,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_interrupt_configuration(void)
  *	I2C bus read, write, bmi160_delay_ms and
  *	device address with global structure bmi160_t
 */
-s8 i2c_routine(void)
+s8 i2c_routine(void) /*USED*/
 {
 /*--------------------------------------------------------------------------*
  *  By using bmi160 the following structure parameter can be accessed

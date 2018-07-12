@@ -8,9 +8,11 @@
 #ifndef I2C_SENSORS_H_
 #define I2C_SENSORS_H_
 
-void i2cSensorsInit();
-uint8_t mpu9150WhoAmI(uint8_t* value, uint8_t address0);
-void bmi160Setup_GRange(const uint8_t* sensorData);
-void bmi160Setup_TicksFactor(const uint32_t* sensorData);
+void i2cSensors_init();
+void bmi160SetupAccelGRange(const uint8_t* sensorData);
+void bmi160SetupAccelTicksFactor(const uint8_t* sensorData, uint16_t dataLength);
+void bmi160SetupAccelSampleRate(const uint8_t* sensorData, uint16_t dataLength);
+void bmi160SetupAccelSampleDuration(const uint8_t* sensorData);
+void I2CSensorsSemaphore_post();
 
 #endif /* I2C_SENSORS_H_ */

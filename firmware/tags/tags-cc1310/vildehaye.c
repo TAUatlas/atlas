@@ -374,12 +374,21 @@ uint16_t vildehayeHandlePacketNaked(const uint8_t* buffer, uint16_t payloadLengt
     	break;
     case BMI160_G_RANGE:
             System_printf("BMI160 G RANGE length %d\n",len);
-            bmi160Setup_GRange(buffer+p);
+            bmi160SetupAccelGRange(buffer+p);
             break;
-    case BMI160_ACCEL_PERIOD:
-            System_printf("BMI160 ACCEL PERIOD length %d\n",len);
-            bmi160Setup_TicksFactor(buffer+p);
+    case BMI160_ACCEL_FACTOR:
+            System_printf("BMI160 ACCEL FACTOR length %d\n",len);
+            bmi160SetupAccelTicksFactor(buffer+p,len);
             break;
+    case BMI160_ACCEL_DURATION:
+            System_printf("BMI160 ACCEL DURATION length %d\n",len);
+            bmi160SetupAccelSampleDuration(buffer+p);
+            break;
+    case BMI160_ACCEL_RATE:
+            System_printf("BMI160 ACCEL RATE length %d\n",len);
+            bmi160SetupAccelSampleRate(buffer+p,len);
+            break;
+
     default:
     	System_printf("VDH code %d (no handler) length %d\n",typeCodeFull,len);
     	break;
